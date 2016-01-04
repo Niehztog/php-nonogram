@@ -1,0 +1,25 @@
+{
+    "name": "niehztog/php-nonogram",
+    "description": "PHP implementaton of the japanese Nonogram mathematical puzzle game",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Nils Gotzhein",
+            "email": "nilsgotzhein@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Nonogram\\": "src/Nonogram/"
+        }
+    },
+    "repositories": [
+    ],
+    "require": {
+        "symfony/yaml": "~2.0",
+        "hoa/console": "~2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}

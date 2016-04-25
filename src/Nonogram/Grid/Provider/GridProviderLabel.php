@@ -19,7 +19,7 @@ class GridProviderLabel implements AnyGridProvider
     {
         $solver = $this->getSolver();
         $this->data = $solver->solve($labels);
-        $this->solvingStatistics = $solver->getRuleActionCounter();
+        $this->solvingStatistics = $solver->getSolvingStatistics();
     }
 
     /**
@@ -35,6 +35,9 @@ class GridProviderLabel implements AnyGridProvider
         return $this->solvingStatistics;
     }
 
+    /**
+     * @return \Nonogram\Solver\SolverJ54
+     */
     private function getSolver()
     {
         $container = new ContainerBuilder();

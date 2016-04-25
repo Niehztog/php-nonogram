@@ -140,6 +140,10 @@ abstract class AbstractRuleJ54
         $allowedCellTypes = (array)$allowedCellTypes;
 
         $segments = array();
+        if(0 === $maxLength) {
+            return $segments;
+        }
+                
         $segKey = 1;
         for ($i=$rj['s'];$i<=$rj['e'];$i++) {
             if (!in_array($row[$i]->getType(), $allowedCellTypes)) {

@@ -38,7 +38,13 @@ class SolverJ54 implements AnySolver
      * counts how many updates come from each rule
      * @var array
      */
-    private $ruleActionCounter = array();
+    private $solvingStatistics = array();
+
+    /**
+     * Time in microseconds it took to solve the puzzle
+     * @var int
+     */
+    private $lastSolvingTime = 0;
 
     /**
      * Init method
@@ -125,8 +131,10 @@ class SolverJ54 implements AnySolver
      */
     public function solve(\Nonogram\Label\Label $labels)
     {
+        $timeStart = microtime(true);
         $this->init($labels);
-        
+        $iterations = 0;
+
         do {
             $updateCounter = 0;
 
@@ -158,8 +166,12 @@ class SolverJ54 implements AnySolver
                     $updateCounter += $this->processUpdateCounter($rule);
                 }
             }
+            $iterations++;
         } while ($updateCounter > 0);
 
+        $this->lastSolvingTime = microtime(true) - $timeStart;
+        $this->solvingStatistics['Iterations'] = $iterations;
+        $this->solvingStatistics['Solving time'] = $this->lastSolvingTime;
         return $this->field;
     }
 
@@ -168,10 +180,10 @@ class SolverJ54 implements AnySolver
         $updates = $rule->getUpdateCounter();
         $ruleClass = get_class($rule);
         $key = substr($ruleClass, strrpos($ruleClass, '\\') + 1);
-        if (!isset($this->ruleActionCounter[$key])) {
-            $this->ruleActionCounter[$key] = 0;
+        if (!isset($this->solvingStatistics[$key])) {
+            $this->solvingStatistics[$key] = 0;
         }
-        $this->ruleActionCounter[$key] += $updates;
+        $this->solvingStatistics[$key] += $updates;
         return $updates;
     }
 
@@ -180,8 +192,8 @@ class SolverJ54 implements AnySolver
      *
      * @return array
      */
-    public function getRuleActionCounter()
+    public function getSolvingStatistics()
     {
-        return $this->ruleActionCounter;
+        return $this->solvingStatistics;
     }
 }

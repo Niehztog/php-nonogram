@@ -30,16 +30,19 @@ class MyRule_4 extends AbstractRuleJ54
             $loopEnd = $r[$j]['s'];
             $loopIncrement = -1;
             $loopCondition = function($i,$border) {return $i>=$border;};
+            $startEnd = 'e';
         }
         else {
             $loopStart = $r[$j]['s'];
             $loopEnd = $r[$j]['e'];
             $loopIncrement = 1;
             $loopCondition = function($i,$border) {return $i<=$border;};
+            $startEnd = 's';
         }
         
         for($i=$loopStart;$loopCondition($i,$loopEnd);$i=$i+$loopIncrement) {
             if($row[$i]->getType() == AnyCell::TYPE_EMPTY) {
+                $r[$j][$startEnd] = $this->refineRange($j,$startEnd,$i+$loopIncrement);
                 $remainingLength = $LB; //start all over
             }
             else {

@@ -1,6 +1,6 @@
 parameters:
-    #application.level_filename: 'sheep_25x25.yml'
-    application.level_filename: 'alona1.yml'
+    application.level_filename: 'sheep_25x25.yml'
+    #application.level_filename: 'alona1.yml'
     #application.level_filename: 'mp_level1a.dat'
 
     # possible values: display, auto, interactive, convert
@@ -26,19 +26,19 @@ services:
             - [attachRule, ['@rule_1_1']]
             - [attachRule, ['@rule_1_2']]
             - [attachRule, ['@rule_1_3']]
-            - [attachRule, ['@rule_1_4']]
+            #- [attachRule, ['@rule_1_4']]
             - [attachRule, ['@rule_1_5']]
-            - [attachRule, ['@rule_2_1']]
+            #- [attachRule, ['@rule_2_1']]
             - [attachRule, ['@rule_2_2']]
             - [attachRule, ['@rule_2_3']]
             - [attachRule, ['@rule_3_1']]
             - [attachRule, ['@rule_3_2']]
             - [attachRule, ['@rule_3_3_1']]
-            - [attachRule, ['@rule_3_3_2']]
+            #- [attachRule, ['@rule_3_3_2']]
             - [attachRule, ['@rule_3_3_3']]
-            - [attachRule, ['@myrule_1']]
+            #- [attachRule, ['@myrule_1']]
             - [attachRule, ['@myrule_2']]
-            - [attachRule, ['@myrule_3']]
+            #- [attachRule, ['@myrule_3']]
             - [attachRule, ['@myrule_4']]
     rule_1_1:
         class: Nonogram\Solver\Rule\RuleJ54_1_1

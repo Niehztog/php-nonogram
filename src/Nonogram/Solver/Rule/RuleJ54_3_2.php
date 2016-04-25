@@ -27,9 +27,6 @@ class RuleJ54_3_2 extends AbstractRuleJ54
     {
         for ($j=1;$j<=count($blackRuns);$j++) {
             $LB = $blackRuns[$j-1];
-            if(1 === $LB) {
-                continue; //TODO ÜBERPRÜFEN OB GUT
-            }
 
             //find out all segments bounded by empty cells in (rjs, rje)
             $B = $this->findSegmentsInRange($row, $r[$j], array(AnyCell::TYPE_BOX, AnyCell::TYPE_UNKNOWN));
@@ -54,6 +51,10 @@ class RuleJ54_3_2 extends AbstractRuleJ54
                 break;
             }
 
+            if(1 === $LB) {
+                continue;
+            }
+            
             $B = $this->findSegmentsInRange($row, $r[$j], array(AnyCell::TYPE_BOX, AnyCell::TYPE_UNKNOWN), $LB-1);
             $b = count($B);
             for($i=1; $i<=$b; $i++) {

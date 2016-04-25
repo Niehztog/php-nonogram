@@ -1,19 +1,25 @@
 <?php
 
 namespace Nonogram\Grid\Provider;
-use Nonogram\Solver\Solver;
+
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class GridProviderLabel implements AnyGridProvider
 {
     private $data;
 
+    private $solvingStatistics;
+
     /**
-     * @param \Nonogram\Label\Provider\AnyLabelProvider $labelProvider
+     * @param \Nonogram\Label\Label $labels
      */
-    public function setLabels(\Nonogram\Label\Provider\AnyLabelProvider $labelProvider)
+    public function setLabels(\Nonogram\Label\Label $labels)
     {
-        $solver = new Solver();
-        $this->data = $solver->solve($labelProvider);
+        $solver = $this->getSolver();
+        $this->data = $solver->solve($labels);
+        $this->solvingStatistics = $solver->getRuleActionCounter();
     }
 
     /**
@@ -23,4 +29,19 @@ class GridProviderLabel implements AnyGridProvider
     {
         return $this->data;
     }
+
+    public function getSolvingStatistics()
+    {
+        return $this->solvingStatistics;
+    }
+
+    private function getSolver()
+    {
+        $container = new ContainerBuilder();
+        $loader = new YamlFileLoader($container, new FileLocator(realpath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Config')));
+        $loader->load('container.yml');
+        $solver = $container->get('solver');
+        return $solver;
+    }
+
 }

@@ -1,4 +1,5 @@
 <?php
+//TODO: auftrennen in View/Controller, DataModel klarer abtrennen
 
 namespace Nonogram\Renderer;
 
@@ -338,7 +339,14 @@ class FieldRendererConsole extends AbstractFieldRenderer implements AnyFieldRend
 
         $this->drawField();
 
-        if(!$this->interactive) {
+        if (!$this->interactive) {
+            $statistics = $this->grid->getSolvingStatistics();
+            if(!empty($statistics)) {
+                echo 'Solving statistics:' . PHP_EOL;
+                foreach ($statistics as $ruleClass => $ruleCounter) {
+                    echo $ruleClass . ': ' . $ruleCounter.PHP_EOL;
+                }
+            }
             exit;
         }
 
@@ -368,8 +376,7 @@ class FieldRendererConsole extends AbstractFieldRenderer implements AnyFieldRend
                     $cell = $this->grid->getCell($this->currentPositionX, $this->currentPositionY);
                     try {
                         $cell->fill();
-                        if($this->grid->isSolved())
-                        {
+                        if ($this->grid->isSolved()) {
                             $this->drawWonScreen();
                             exit;
                         }
@@ -431,7 +438,9 @@ class FieldRendererConsole extends AbstractFieldRenderer implements AnyFieldRend
         }
         echo $this->getBorderChar('h', $this->isHighlightedX($sizeX) && $this->isHighlightedY(1));
         echo $this->getBorderChar('tr', $this->isHighlightedX($sizeX) && $this->isHighlightedY(1));
-        echo str_repeat(' ', 4) . 'Failures: ' . $this->getFailureCounter();
+        if ($this->interactive) {
+            echo str_repeat(' ', 4) . 'Failures: ' . $this->getFailureCounter();
+        }
         echo PHP_EOL;
 
         for ($y = 1; $y <= $sizeY; $y++) {
@@ -528,14 +537,20 @@ class FieldRendererConsole extends AbstractFieldRenderer implements AnyFieldRend
      */
     private function drawLabelsColumn()
     {
-        $maxNumbersCol = $this->grid->getMaxAmountVertical();
+        $labels = $this->grid->getLabels();
+        $maxNumbersCol = $labels->getMaxAmountVertical();
 
         for ($line = $maxNumbersCol - 1; $line >= 0; $line--) {
             echo str_repeat(' ', $this->labelLength);
             for ($x = 1; $x <= $this->grid->getSizeX(); $x++) {
-                $labelsCol = array_reverse($this->grid->getLabelsForColumn($x));
-                if (isset($labelsCol[$line])) {
-                    echo ' ' . str_pad($labelsCol[$line], self::CELL_WIDTH, ' ', STR_PAD_LEFT);
+                $labelsCol = $labels->getLabelsForColumn($x);
+                if (null === $labelsCol) {
+                    throw new \RuntimeException('failed to retrieve labels for column '.$x);
+                }
+                $labelsColReverse = array_reverse($labelsCol);
+
+                if (isset($labelsColReverse[$line])) {
+                    echo ' ' . str_pad($labelsColReverse[$line], self::CELL_WIDTH, ' ', STR_PAD_LEFT);
                 } else {
                     echo ' ' . str_repeat(' ', self::CELL_WIDTH);
                 }
@@ -574,8 +589,9 @@ class FieldRendererConsole extends AbstractFieldRenderer implements AnyFieldRend
      */
     private function getLabelsRow($index)
     {
-        $maxNumbersRow = $this->grid->getMaxAmountHorizontal();
-        $labelsRow = $this->grid->getLabelsForRow($index);
+        $labels = $this->grid->getLabels();
+        $maxNumbersRow = $labels->getMaxAmountHorizontal();
+        $labelsRow = $labels->getLabelsForRow($index);
         $max = max($labelsRow);
         $maxLength = strlen((string)$max);
 
@@ -584,7 +600,7 @@ class FieldRendererConsole extends AbstractFieldRenderer implements AnyFieldRend
             if (isset($labelsRow[$column])) {
                 $return .= str_pad($labelsRow[$column], $maxLength, ' ', STR_PAD_LEFT) . ' ';
             } else {
-                echo str_repeat(' ', self::CELL_WIDTH);
+                $return = str_repeat(' ', self::CELL_WIDTH) . $return;
             }
         }
 
@@ -596,7 +612,7 @@ class FieldRendererConsole extends AbstractFieldRenderer implements AnyFieldRend
      */
     private function getCharForCell(\Nonogram\Cell\AnyCell $cell)
     {
-        if ($cell::STATUS_HIDDEN === $cell->getStatus()) {
+        if (($this->interactive && $cell::STATUS_HIDDEN === $cell->getStatus()) || $cell::TYPE_UNKNOWN === $cell->getType()) {
             $char = ' ';
         } else {
             if ($cell::TYPE_BOX === $cell->getType()) {

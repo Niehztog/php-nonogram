@@ -8,7 +8,6 @@ namespace Nonogram\Renderer;
  */
 interface AnyFieldRenderer
 {
-
     /**
      * Provide version which allows user interactions or merely display grid
      * @param $interactive

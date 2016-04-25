@@ -79,7 +79,7 @@ class LabelProviderGrid implements AnyLabelProvider
                     }
                 }
             }
-            if(0 === end($labelsCol)) {
+            if (0 === end($labelsCol)) {
                 array_pop($labelsCol);
             }
             $labelsAll[] = $labelsCol;

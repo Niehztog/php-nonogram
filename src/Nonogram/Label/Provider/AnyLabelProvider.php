@@ -13,5 +13,4 @@ interface AnyLabelProvider
      * @return array
      */
     public function getLabelsForRow();
-
 }

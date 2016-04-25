@@ -33,7 +33,7 @@ class CellWrapper implements AnyCell
      */
     public function getType()
     {
-        return $this->cellInstance->getType();
+        return null === $this->cellInstance ? self::TYPE_UNKNOWN : $this->cellInstance->getType();
     }
 
     /**

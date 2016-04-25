@@ -3,10 +3,15 @@
 
 namespace Nonogram;
 
-$rootDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..') . DIRECTORY_SEPARATOR;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
+$rootDir = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..') . DIRECTORY_SEPARATOR;
 require $rootDir . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-use Nonogram\Application\ApplicationConsole;
-
-$app = new ApplicationConsole();
+$container = new ContainerBuilder();
+$loader = new YamlFileLoader($container, new FileLocator(realpath(__DIR__.DIRECTORY_SEPARATOR.'Config')));
+$loader->load('container.yml');
+$app = $container->get('application');
 $app->run();

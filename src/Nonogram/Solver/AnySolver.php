@@ -4,11 +4,9 @@ namespace Nonogram\Solver;
 
 interface AnySolver
 {
-
     /**
-     * @param \Nonogram\Label\Provider\AnyLabelProvider $labelProvider
+     * @param \Nonogram\Label\Label $labels
      * @return array
      */
-    public function solve(\Nonogram\Label\Provider\AnyLabelProvider $labelProvider);
-
+    public function solve(\Nonogram\Label\Label $labels);
 }

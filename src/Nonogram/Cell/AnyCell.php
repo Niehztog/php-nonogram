@@ -6,6 +6,12 @@ interface AnyCell
 {
 
     /**
+     * Indicates the actual cell trait (unknown)
+     * @var int
+     */
+    const TYPE_UNKNOWN = 0;
+
+    /**
      * Indicates the actual cell trait (box)
      * @var int
      */

@@ -21,18 +21,14 @@ class Grid
     private $cells = array();
 
     /**
-     * Numeric row labels = tuple of numbers
-     *
-     * @var array
+     * @var \Nonogram\Label\Label
      */
-    private $labelsRow = array();
+    private $labels;
 
     /**
-     * Numeric column labels = tuple of numbers
-     *
      * @var array
      */
-    private $labelsColumn = array();
+    private $solvingStatistics;
 
     /**
      * @param \Nonogram\Grid\Provider\AnyGridProvider $provider
@@ -40,15 +36,34 @@ class Grid
     public function setCells(\Nonogram\Grid\Provider\AnyGridProvider $provider)
     {
         $this->cells = $provider->provide();
+        if(method_exists($provider,'getSolvingStatistics')) {
+            $this->solvingStatistics = $provider->getSolvingStatistics();
+        }
     }
 
     /**
-     * @param \Nonogram\Grid\Provider\AnyGridProvider $provider
+     * @param \Nonogram\Label\Label $label
      */
-    public function setLabels(\Nonogram\Label\Provider\AnyLabelProvider $provider)
+    public function setLabels(\Nonogram\Label\Label $label)
     {
-        $this->labelsColumn = $provider->getLabelsForColumn();
-        $this->labelsRow = $provider->getLabelsForRow();
+        $this->labels = $label;
+    }
+
+    /**
+     * @return \Nonogram\Label\Label
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * Getter for all cells
+     * @return AnyCell[][]
+     */
+    public function getCells()
+    {
+        return $this->cells;
     }
 
     /**
@@ -93,8 +108,8 @@ class Grid
     public function isSolved()
     {
         foreach ($this->cells as $y => $row) {
-            foreach($row as $x => $cell) {
-                if(!$cell->isSolved()) {
+            foreach ($row as $x => $cell) {
+                if (!$cell->isSolved()) {
                     return false;
                 }
             }
@@ -102,70 +117,9 @@ class Grid
         return true;
     }
 
-    /**
-     * required for drawing the field and for autosolving
-     *
-     * @param $index
-     */
-    public function getLabelsForColumn($index)
+    public function getSolvingStatistics()
     {
-        return $this->getLabels(false, $index);
+        return $this->solvingStatistics;
     }
 
-    /**
-     * required for drawing the field and for autosolving
-     *
-     * @param $index
-     */
-    public function getLabelsForRow($index)
-    {
-        return $this->getLabels(true, $index);
-    }
-
-    /**
-     * @param $horizontal
-     * @param $index
-     */
-    private function getLabels($horizontal, $index)
-    {
-        if ($horizontal) {
-            return $this->labelsRow[$index-1];
-        }
-        return $this->labelsColumn[$index-1];
-    }
-
-    /**
-     * required for drawing the field, how much space to leave blank for numbers
-     * @return int
-     */
-    public function getMaxAmountVertical()
-    {
-        return $this->getMaxAmount(false);
-    }
-
-    /**
-     * required for drawing the field, how much space to leave blank for numbers
-     * @return int
-     */
-    public function getMaxAmountHorizontal()
-    {
-        return $this->getMaxAmount(true);
-    }
-
-    /**
-     * required for drawing the field, how much space to leave blank for numbers
-     * @return int
-     */
-    private function getMaxAmount($horizontal)
-    {
-        $labelVariable = $horizontal ? 'labelsRow' : 'labelsColumn';
-        $max = 0;
-        foreach ($this->$labelVariable as $labels) {
-            $count = count($labels);
-            if ($count > $max) {
-                $max = $count;
-            }
-        }
-        return $max;
-    }
 }

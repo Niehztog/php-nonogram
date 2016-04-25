@@ -1,0 +1,76 @@
+parameters:
+    #application.level_filename: 'sheep_25x25.yml'
+    application.level_filename: 'alona1.yml'
+    #application.level_filename: 'mp_level1a.dat'
+
+    # possible values: display, auto, interactive, convert
+    application.mode: 'display'
+
+services:
+    application:
+        class: Nonogram\Application\ApplicationConsole
+        arguments: ['@grid_factory', '@renderer_factory', '@grid_saver_file']
+        calls:
+            - [setLevelFilename, ['%application.level_filename%']]
+            - [setMode, ['%application.mode%']]
+    grid_factory:
+        class: Nonogram\Grid\Factory
+    renderer_factory:
+        class: Nonogram\Renderer\Factory
+    grid_saver_file:
+        class: Nonogram\Grid\Saver\GridSaverFile
+
+    solver:
+        class: Nonogram\Solver\SolverJ54
+        calls:
+            - [attachRule, ['@rule_1_1']]
+            - [attachRule, ['@rule_1_2']]
+            - [attachRule, ['@rule_1_3']]
+            - [attachRule, ['@rule_1_4']]
+            - [attachRule, ['@rule_1_5']]
+            - [attachRule, ['@rule_2_1']]
+            - [attachRule, ['@rule_2_2']]
+            - [attachRule, ['@rule_2_3']]
+            - [attachRule, ['@rule_3_1']]
+            - [attachRule, ['@rule_3_2']]
+            - [attachRule, ['@rule_3_3_1']]
+            - [attachRule, ['@rule_3_3_2']]
+            - [attachRule, ['@rule_3_3_3']]
+            - [attachRule, ['@myrule_1']]
+            - [attachRule, ['@myrule_2']]
+            - [attachRule, ['@myrule_3']]
+            - [attachRule, ['@myrule_4']]
+    rule_1_1:
+        class: Nonogram\Solver\Rule\RuleJ54_1_1
+    rule_1_2:
+        class: Nonogram\Solver\Rule\RuleJ54_1_2
+    rule_1_3:
+        class: Nonogram\Solver\Rule\RuleJ54_1_3
+    rule_1_4:
+        class: Nonogram\Solver\Rule\RuleJ54_1_4
+    rule_1_5:
+        class: Nonogram\Solver\Rule\RuleJ54_1_5
+    rule_2_1:
+        class: Nonogram\Solver\Rule\RuleJ54_2_1
+    rule_2_2:
+        class: Nonogram\Solver\Rule\RuleJ54_2_2
+    rule_2_3:
+        class: Nonogram\Solver\Rule\RuleJ54_2_3
+    rule_3_1:
+        class: Nonogram\Solver\Rule\RuleJ54_3_1
+    rule_3_2:
+        class: Nonogram\Solver\Rule\RuleJ54_3_2
+    rule_3_3_1:
+        class: Nonogram\Solver\Rule\RuleJ54_3_3_1
+    rule_3_3_2:
+        class: Nonogram\Solver\Rule\RuleJ54_3_3_2
+    rule_3_3_3:
+        class: Nonogram\Solver\Rule\RuleJ54_3_3_3
+    myrule_1:
+        class: Nonogram\Solver\Rule\MyRule_1
+    myrule_2:
+        class: Nonogram\Solver\Rule\MyRule_2
+    myrule_3:
+        class: Nonogram\Solver\Rule\MyRule_3
+    myrule_4:
+        class: Nonogram\Solver\Rule\MyRule_4

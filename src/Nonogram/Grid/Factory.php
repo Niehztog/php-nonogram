@@ -1,12 +1,12 @@
 <?php
 
 namespace Nonogram\Grid;
+
 use Nonogram\Grid\Provider\GridProviderFile;
 use Nonogram\Grid\Provider\GridProviderLabel;
 
 class Factory
 {
-
     /**
      * @var int
      */
@@ -27,9 +27,9 @@ class Factory
     /**
      * @return mixed
      */
-    public function getLoadedSource()
+    public function isLoadedFromGrid()
     {
-        return $this->loadedSource;
+        return \Nonogram\Grid\Factory::SOURCE_GRID === $this->loadedSource;
     }
 
     public function getFromFile($filePathFull)
@@ -62,8 +62,8 @@ class Factory
         $grid->setCells($p);
 
         $labelFactory = new \Nonogram\Label\Factory();
-        $labelProvider = $labelFactory->getForGrid($grid);
-        $grid->setLabels($labelProvider);
+        $label = $labelFactory->getForGrid($grid);
+        $grid->setLabels($label);
 
         $this->loadedSource = self::SOURCE_GRID;
         return $grid;
@@ -79,17 +79,16 @@ class Factory
     private function getFromLabelFile($filePathFull)
     {
         $labelFactory = new \Nonogram\Label\Factory();
-        $labelProvider = $labelFactory->getForFile($filePathFull);
+        $label = $labelFactory->getForFile($filePathFull);
 
         $p = new GridProviderLabel();
-        $p->setLabels($labelProvider);
+        $p->setLabels($label);
 
         $grid = new Grid();
         $grid->setCells($p);
-        $grid->setLabels($labelProvider);
+        $grid->setLabels($label);
 
         $this->loadedSource = self::SOURCE_LABEL;
         return $grid;
     }
-
 }

@@ -6,7 +6,6 @@ use Symfony\Component\Yaml\Parser;
 
 class LabelProviderFile implements  AnyLabelProvider
 {
-
     private $data;
 
     /**
@@ -34,5 +33,4 @@ class LabelProviderFile implements  AnyLabelProvider
     {
         return $this->data['rows'];
     }
-
 }

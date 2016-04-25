@@ -26,27 +26,20 @@ class Factory
     private $interactive = true;
 
     /**
-     * Factory constructor.
-     * @param \Nonogram\Grid\Grid $grid
-     */
-    public function __construct(\Nonogram\Grid\Grid $grid)
-    {
-        $this->grid = $grid;
-    }
-
-    /**
      * @param boolean $interactive
      */
-    public function setInteractive(bool $interactive)
+    public function setInteractive($interactive)
     {
-        $this->interactive = $interactive;
+        $this->interactive = (bool)$interactive;
     }
 
     /**
+     * @param \Nonogram\Grid\Grid $grid
      * @return FieldRendererConsole|null
      */
-    public function get()
+    public function get(\Nonogram\Grid\Grid $grid)
     {
+        $this->grid = $grid;
         return $this->getForEnvironment(self::ENVIRONMENT_CONSOLE);
     }
 

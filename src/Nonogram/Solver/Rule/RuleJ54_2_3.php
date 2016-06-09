@@ -6,9 +6,14 @@ use Nonogram\Cell\AnyCell;
 
 class RuleJ54_2_3 extends AbstractRuleJ54
 {
-    public function __construct()
+
+    /**
+     * RuleJ54_2_3 constructor.
+     * @param \Nonogram\Cell\Factory $cellFactory
+     */
+    public function __construct(\Nonogram\Cell\Factory $cellFactory)
     {
-        parent::__construct();
+        parent::__construct($cellFactory);
     }
 
     /**
@@ -32,7 +37,7 @@ class RuleJ54_2_3 extends AbstractRuleJ54
             foreach ($B as $i) {
                 if ($this->getRangeLength($i) > $LB) {
 
-                    $coveringBlackRuns = $this->findCoveringBlackRuns(range($i['s'],$i['e']), $r);
+                    $coveringBlackRuns = $this->findCoveringBlackRuns($i['s'],$i['e'], $r);
                     if(($key = array_search($j, $coveringBlackRuns)) !== false) {
                         unset($coveringBlackRuns[$key]);
                     }

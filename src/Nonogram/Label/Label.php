@@ -28,23 +28,50 @@ class Label
      */
     private $sizeY;
 
+    /**
+     * @var int
+     */
+    private $cacheMaxAmountRow;
+
+    /**
+     * @var int
+     */
+    private $cacheMaxAmountCol;
+
+    /**
+     * @var int
+     */
+    private $cacheMaxDigitCount;
+
+    /**
+     * @param array $labels
+     */
     public function setCol(array $labels)
     {
         $this->col = $labels;
         $this->sizeX = count($labels);
     }
 
+    /**
+     * @param array $labels
+     */
     public function setRow(array $labels)
     {
         $this->row = $labels;
         $this->sizeY = count($labels);
     }
 
+    /**
+     * @return array
+     */
     public function getCol()
     {
         return $this->col;
     }
 
+    /**
+     * @return array
+     */
     public function getRow()
     {
         return $this->row;
@@ -88,7 +115,7 @@ class Label
      */
     public function getMaxAmountVertical()
     {
-        return $this->getMaxAmount(false);
+        return isset($this->cacheMaxAmountCol) ? $this->cacheMaxAmountCol : $this->cacheMaxAmountCol = $this->getMaxAmount(false);
     }
 
     /**
@@ -97,7 +124,36 @@ class Label
      */
     public function getMaxAmountHorizontal()
     {
-        return $this->getMaxAmount(true);
+        return isset($this->cacheMaxAmountRow) ? $this->cacheMaxAmountRow : $this->cacheMaxAmountRow = $this->getMaxAmount(true);
+    }
+
+    /**
+     * For all labels describing horizontal rows, this method searches for
+     * the highest number and returns the amount of digits necessary to
+     * represent it. For example
+     * 7- 1 digit
+     * 11 - 2 digits
+     * @return int
+     */
+    public function getMaxDigitCount()
+    {
+        if(isset($this->cacheMaxDigitCount)) {
+            return $this->cacheMaxDigitCount;
+        }
+
+        $totalMax = 0;
+        foreach ($this->row as $labelsRow) {
+            if(empty($labelsRow)) {
+                continue;
+            }
+            $max = max($labelsRow);
+            $maxLength = strlen((string)$max);
+            if ($maxLength > $totalMax) {
+                $totalMax = $maxLength;
+            }
+        }
+
+        return $this->cacheMaxDigitCount = $totalMax;
     }
 
     /**

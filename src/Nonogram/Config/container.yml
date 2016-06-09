@@ -1,27 +1,225 @@
 parameters:
-    application.level_filename: 'sheep_25x25.yml'
-    #application.level_filename: 'alona1.yml'
-    #application.level_filename: 'mp_level1a.dat'
+    application.root_directory: '' #will be set from outside
+    #application.level_filename: '%application.root_directory%data/Levels/sheep_25x25.yml'
+    #application.level_filename: '%application.root_directory%data/Levels/duck_15x15.yml'
+    #application.level_filename: '%application.root_directory%data/Levels/cat_20x20.yml'
+    #application.level_filename: '%application.root_directory%data/Levels/person_with_dog_15x15.yml'
+    #application.level_filename: '%application.root_directory%data/Levels/ship_10x10.yml'
+    #application.level_filename: '%application.root_directory%data/Levels/face_10x10.yml'
+    #application.level_filename: '%application.root_directory%data/Levels/airplane_25x25.yml'
+    #application.level_filename: '%application.root_directory%data/Levels/sunflower_25x25.yml'
+    #application.level_filename: '%application.root_directory%data/Levels/monkey_15x15.yml'
+    #application.level_filename: '%application.root_directory%data/Levels/mariopicross'
+    #application.level_filename: '%application.root_directory%data/Levels/mariopicross/star-level8-b.yml'
+    #application.level_filename: 'https://raw.githubusercontent.com/Substance12/Picroxx/master/game/courses/mariopicross/easy/level1/a.lua'
+    application.level_filename: 'http://webpbn.com/XMLpuz.cgi?id=[1-20]'
+    #application.level_filename:
+    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-a.yml'
+    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-b.yml'
+    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-c.yml'
+    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-d.yml'
+    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-e.yml'
+    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-f.yml'
 
-    # possible values: display, auto, interactive, convert
-    application.mode: 'display'
+    application.html_export.solved: true
+    application.html_export.cellsize: 20
+    application.html_export.multiple: true
 
 services:
     application:
-        class: Nonogram\Application\ApplicationConsole
-        arguments: ['@grid_factory', '@renderer_factory', '@grid_saver_file']
+        public: true
+        class: Nonogram\Controller\ControllerMain
+        arguments: ['@controller_display']
         calls:
-            - [setLevelFilename, ['%application.level_filename%']]
-            - [setMode, ['%application.mode%']]
+            - [setInputParameter, [{level_filename:%application.level_filename%}]]
+
+
+    controller_game:
+        public: false
+        class: Nonogram\Controller\ControllerGame
+        arguments: ['@grid_factory', '@view_text', '@finder']
+    controller_display:
+        public: false
+        class: Nonogram\Controller\ControllerDisplay
+        arguments: ['@grid_factory', '@view_text', '@finder']
+    controller_convert:
+        public: false
+        class: Nonogram\Controller\ControllerConvert
+        arguments: ['@grid_factory', '@view_html', '@finder', '@grid_saver_file']
+
+
+    view_text:
+        public: false
+        class: Nonogram\View\ViewText
+    view_yaml:
+        public: false
+        class: Nonogram\View\ViewYaml
+        arguments: ['@yaml_dumper']
+    view_textmin:
+        public: false
+        class: Nonogram\View\ViewTextMinimal
+    view_html:
+        public: false
+        class: Nonogram\View\ViewHtml
+        calls:
+            - [setSolved, ['%application.html_export.solved%']]
+            - [setCellSizePx, ['%application.html_export.cellsize%']]
+            - [setExportMultiple, ['%application.html_export.multiple%']]
+
+
     grid_factory:
+        public: true
         class: Nonogram\Grid\Factory
-    renderer_factory:
-        class: Nonogram\Renderer\Factory
+        arguments: ['@level_parser_factory', '@data_source_factory']
+        calls:
+            - [setContainer, ['@service_container']]
+
+    grid:
+        shared: false
+        public: true
+        class: Nonogram\Grid\Grid
+
+
+    data_source_factory:
+        public: false
+        class: Nonogram\LevelDataSource\LevelDataSourceFactory
+        calls:
+            - [attachDataSource, ['@data_source_file']]
+            - [attachDataSource, ['@data_source_url']]
+
+    data_source_file:
+        public: false
+        class: Nonogram\LevelDataSource\LevelDataSourceFile
+
+    data_source_url:
+        public: false
+        class: Nonogram\LevelDataSource\LevelDataSourceURL
+
+
+    level_parser_factory:
+        public: false
+        class: Nonogram\LevelParser\LevelParserFactory
+        calls:
+            - [attachParser, ['@level_parser_yaml']]
+            - [attachParser, ['@level_parser_dat']]
+            - [attachParser, ['@level_parser_lua']]
+            - [attachParser, ['@level_parser_xml']]
+
+    level_parser_yaml:
+        public: false
+        class: Nonogram\LevelParser\LevelParserYaml
+        arguments: ['@label_factory', '@yaml_parser']
+
+    level_parser_dat:
+        public: false
+        class: Nonogram\LevelParser\LevelParserDat
+        arguments: ['@cell_factory']
+
+    level_parser_lua:
+        public: false
+        class: Nonogram\LevelParser\LevelParserLua
+        arguments: ['@cell_factory']
+
+    level_parser_xml:
+        public: false
+        class: Nonogram\LevelParser\LevelParserXml
+        arguments: ['@label_factory']
+
+    level_parser_yaml_decorator:
+        public: false
+        class: Nonogram\LevelParser\LevelParserUniversalWrapper
+        decorates: level_parser_yaml
+        arguments: ['@level_parser_yaml_decorator.inner']
+        calls:
+            - [setSolver, ['@solver']]
+
+    level_parser_dat_decorator:
+        public: false
+        class: Nonogram\LevelParser\LevelParserUniversalWrapper
+        decorates: level_parser_dat
+        arguments: ['@level_parser_dat_decorator.inner']
+        calls:
+            - [setLabelFactory, ['@label_factory']]
+
+    level_parser_lua_decorator:
+        public: false
+        class: Nonogram\LevelParser\LevelParserUniversalWrapper
+        decorates: level_parser_lua
+        arguments: ['@level_parser_lua_decorator.inner']
+        calls:
+            - [setLabelFactory, ['@label_factory']]
+
+    level_parser_xml_decorator:
+        public: false
+        class: Nonogram\LevelParser\LevelParserUniversalWrapper
+        decorates: level_parser_xml
+        arguments: ['@level_parser_xml_decorator.inner']
+        calls:
+            - [setSolver, ['@solver']]
+
+
+    cell_factory:
+        public: false
+        class: \Nonogram\Cell\Factory
+        calls:
+            - [setContainer, ['@service_container']]
+
+    cell_wrapper:
+        shared: false
+        public: true
+        class: \Nonogram\Cell\CellWrapper
+
+    cell_empty:
+        shared: false
+        public: true
+        class: \Nonogram\Cell\CellEmpty
+
+    cell_empty_decorator:
+        shared: false
+        public: false
+        class: \Nonogram\Cell\CellWrapper
+        decorates: cell_empty
+        arguments: ['@cell_empty_decorator.inner']
+
+    cell_box:
+        shared: false
+        public: true
+        class: \Nonogram\Cell\CellBox
+
+    cell_box_decorator:
+        shared: false
+        public: false
+        class: \Nonogram\Cell\CellWrapper
+        decorates: cell_box
+        arguments: ['@cell_box_decorator.inner']
+
+
+    label_factory:
+        public: false
+        class: \Nonogram\Label\Factory
+        arguments: ['@label_generator']
+        calls:
+            - [setContainer, ['@service_container']]
+
+    label:
+        shared: false
+        public: true
+        class: Nonogram\Label\Label
+
+    label_generator:
+        public: false
+        class: Nonogram\Label\LabelProviderCells
+
+
     grid_saver_file:
+        public: false
         class: Nonogram\Grid\Saver\GridSaverFile
 
+
     solver:
+        public: true
         class: Nonogram\Solver\SolverJ54
+        arguments: ['@cell_factory', '@run_range_factory']
         calls:
             - [attachRule, ['@rule_1_1']]
             - [attachRule, ['@rule_1_2']]
@@ -29,48 +227,117 @@ services:
             #- [attachRule, ['@rule_1_4']]
             - [attachRule, ['@rule_1_5']]
             #- [attachRule, ['@rule_2_1']]
-            - [attachRule, ['@rule_2_2']]
+            #- [attachRule, ['@rule_2_2']]
             - [attachRule, ['@rule_2_3']]
             - [attachRule, ['@rule_3_1']]
             - [attachRule, ['@rule_3_2']]
-            - [attachRule, ['@rule_3_3_1']]
-            #- [attachRule, ['@rule_3_3_2']]
+            #- [attachRule, ['@rule_3_3_1']]
+            - [attachRule, ['@rule_3_3_2']]
             - [attachRule, ['@rule_3_3_3']]
             #- [attachRule, ['@myrule_1']]
             - [attachRule, ['@myrule_2']]
-            #- [attachRule, ['@myrule_3']]
+            - [attachRule, ['@myrule_3']]
             - [attachRule, ['@myrule_4']]
+            - [attachRule, ['@myrule_5']]
+            - [attachRule, ['@myrule_6']]
     rule_1_1:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_1_1
+        arguments: ['@cell_factory']
     rule_1_2:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_1_2
+        arguments: ['@cell_factory']
     rule_1_3:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_1_3
+        arguments: ['@cell_factory']
     rule_1_4:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_1_4
+        arguments: ['@cell_factory']
     rule_1_5:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_1_5
+        arguments: ['@cell_factory']
     rule_2_1:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_2_1
+        arguments: ['@cell_factory']
     rule_2_2:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_2_2
+        arguments: ['@cell_factory']
     rule_2_3:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_2_3
+        arguments: ['@cell_factory']
     rule_3_1:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_3_1
+        arguments: ['@cell_factory']
     rule_3_2:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_3_2
+        arguments: ['@cell_factory']
     rule_3_3_1:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_3_3_1
+        arguments: ['@cell_factory']
     rule_3_3_2:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_3_3_2
+        arguments: ['@cell_factory']
     rule_3_3_3:
+        public: false
         class: Nonogram\Solver\Rule\RuleJ54_3_3_3
+        arguments: ['@cell_factory']
     myrule_1:
+        public: false
         class: Nonogram\Solver\Rule\MyRule_1
+        arguments: ['@cell_factory']
     myrule_2:
+        public: false
         class: Nonogram\Solver\Rule\MyRule_2
+        arguments: ['@cell_factory']
     myrule_3:
+        public: false
         class: Nonogram\Solver\Rule\MyRule_3
+        arguments: ['@cell_factory']
     myrule_4:
+        public: false
         class: Nonogram\Solver\Rule\MyRule_4
+        arguments: ['@cell_factory']
+    myrule_5:
+        public: false
+        class: Nonogram\Solver\Rule\MyRule_5
+        arguments: ['@cell_factory']
+    myrule_6:
+        public: false
+        class: Nonogram\Solver\Rule\MyRule_6
+        arguments: ['@cell_factory']
+
+
+    run_range:
+        shared: false
+        public: true
+        class: Nonogram\Solver\RunRange\RunRange
+
+    run_range_factory:
+        public: false
+        class: Nonogram\Solver\RunRange\RunRangeFactory
+        calls:
+            - [setContainer, ['@service_container']]
+
+
+    yaml_dumper:
+        public: false
+        class: \Symfony\Component\Yaml\Dumper
+
+    yaml_parser:
+        public: false
+        class: \Symfony\Component\Yaml\Parser
+
+    finder:
+        public: false
+        class: \Symfony\Component\Finder\Finder

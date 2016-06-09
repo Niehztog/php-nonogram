@@ -2,93 +2,56 @@
 
 namespace Nonogram\Grid;
 
-use Nonogram\Grid\Provider\GridProviderFile;
-use Nonogram\Grid\Provider\GridProviderLabel;
-
-class Factory
+class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareInterface
 {
-    /**
-     * @var int
-     */
-    const SOURCE_LABEL = 1;
+    use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
     /**
-     * @var int
+     * @var \Nonogram\LevelParser\LevelParserFactory
      */
-    const SOURCE_GRID = 2;
+    private $parserFactory;
 
     /**
-     * Indicated the source of the just loaded grid
-     * @var
+     * @var \Nonogram\LevelDataSource\LevelDataSourceFactory
      */
-    private $loadedSource;
-
+    private $dataSourceFactory;
 
     /**
-     * @return mixed
+     * Factory constructor.
+     * @param \Nonogram\LevelParser\LevelParserFactory $parserFactory
+     * @param \Nonogram\LevelDataSource\LevelDataSourceFactory $dataSourceFactory
      */
-    public function isLoadedFromGrid()
+    public function __construct(
+        \Nonogram\LevelParser\LevelParserFactory $parserFactory,
+        \Nonogram\LevelDataSource\LevelDataSourceFactory $dataSourceFactory
+    )
     {
-        return \Nonogram\Grid\Factory::SOURCE_GRID === $this->loadedSource;
+        $this->parserFactory = $parserFactory;
+        $this->dataSourceFactory = $dataSourceFactory;
     }
 
-    public function getFromFile($filePathFull)
+    /**
+     * @param $urn
+     * @return \Nonogram\Grid\Grid
+     */
+    public function get($urn)
     {
-        $ext = pathinfo($filePathFull, PATHINFO_EXTENSION);
-
-        switch ($ext) {
-            case 'dat':
-                return $this->getFromGridFile($filePathFull);
-                break;
-
-            case 'yml':
-                return $this->getFromLabelFile($filePathFull);
-                break;
+        if(empty($urn)) {
+            throw new \InvalidArgumentException('missing parameter "urn"');
         }
-    }
 
-    /**
-     * Loads a grid layout from file
-     *
-     * @param $filePathFull
-     * @return \Nonogram\Grid\Grid
-     */
-    private function getFromGridFile($filePathFull)
-    {
-        $p = new GridProviderFile();
-        $p->load($filePathFull);
+        $dataSource = $this->dataSourceFactory->get($urn);
+        $parser = $this->parserFactory->get($urn);
+        $parser->setRawData($dataSource->getData());
+        $cells = $parser->getGrid();
+        $label = $parser->getLabels();
 
-        $grid = new Grid();
-        $grid->setCells($p);
-
-        $labelFactory = new \Nonogram\Label\Factory();
-        $label = $labelFactory->getForGrid($grid);
+        $grid = $this->container->get('grid');
+        $grid->setCells($cells);
         $grid->setLabels($label);
+        $grid->setSolvingStatistics($parser->getSolvingStatistics());
 
-        $this->loadedSource = self::SOURCE_GRID;
         return $grid;
     }
 
-    /**
-     * Loads a grid label layout from file
-     * (the actual grid has to be computed)
-     *
-     * @param $filePathFull
-     * @return \Nonogram\Grid\Grid
-     */
-    private function getFromLabelFile($filePathFull)
-    {
-        $labelFactory = new \Nonogram\Label\Factory();
-        $label = $labelFactory->getForFile($filePathFull);
-
-        $p = new GridProviderLabel();
-        $p->setLabels($label);
-
-        $grid = new Grid();
-        $grid->setCells($p);
-        $grid->setLabels($label);
-
-        $this->loadedSource = self::SOURCE_LABEL;
-        return $grid;
-    }
 }

@@ -6,9 +6,14 @@ use Nonogram\Cell\AnyCell;
 
 class MyRule_3 extends AbstractRuleJ54
 {
-    public function __construct()
+
+    /**
+     * MyRule_3 constructor.
+     * @param \Nonogram\Cell\Factory $cellFactory
+     */
+    public function __construct(\Nonogram\Cell\Factory $cellFactory)
     {
-        parent::__construct();
+        parent::__construct($cellFactory);
     }
 
     /**

@@ -7,19 +7,19 @@ use Nonogram\Cell\AnyCell;
 abstract class AbstractRuleJ54
 {
     /**
+     * @var bool
+     */
+    const RESULT_LINE_SOLVED = true;
+    
+    /**
      * @var array
      */
     private $row;
 
     /**
-     * @var RunRange
+     * @var array
      */
     private $runRanges;
-
-    /**
-     * @var \Nonogram\Label\Label
-     */
-    protected $labels;
 
     /**
      * @var \Nonogram\Cell\Factory
@@ -31,17 +31,14 @@ abstract class AbstractRuleJ54
      */
     private $updateCounter;
 
-    public function __construct()
-    {
-        $this->cellFactory = new \Nonogram\Cell\Factory();
-    }
-
     /**
-     * @param \Nonogram\Label\Label $labels
+     * AbstractRuleJ54 constructor.
+     * @param \Nonogram\Cell\Factory $cellFactory
      */
-    public function setLabels(\Nonogram\Label\Label $labels)
+    public function __construct(\Nonogram\Cell\Factory $cellFactory)
     {
-        $this->labels = $labels;
+        $this->cellFactory = $cellFactory;
+        $this->cellFactory->setStatusHidden(false);
     }
 
     /**
@@ -55,22 +52,24 @@ abstract class AbstractRuleJ54
 
     /**
      * Returns an array of black run numbers, whose range
-     * contains given cell(s)
+     * contains *all* given cell(s)
      *
-     * @param array $cellNumbers containing the numbers of x consecutive cells or one single cell
+     * @param $cellIndexStart
+     * @param $cellIndexEnd
      * @param array $r
+     * @param null $lengthFilter if set, only runs with the specified length will be included in the result
      * @return array [0..k]
      */
-    protected function findCoveringBlackRuns(array $cellNumbers, array $r)
+    protected function findCoveringBlackRuns($cellIndexStart, $cellIndexEnd, array $r, $lengthFilter = null)
     {
-        if (empty($cellNumbers)) {
-            throw new \InvalidArgumentException('cellNumbers must contain at least one element');
+        if ($cellIndexStart > $cellIndexEnd) {
+            throw new \InvalidArgumentException(sprintf('invalid arguments for cellIndexStart/End (%d,%d)', $cellIndexStart, $cellIndexEnd));
         }
 
         $intersectingBlackRuns = array();
 
         foreach ($r as $j => $range) {
-            if ($range['s'] <= min($cellNumbers) && max($cellNumbers) <= $range['e']) {
+            if ($range['s'] <= $cellIndexStart && $cellIndexEnd <= $range['e'] && (null === $lengthFilter || $lengthFilter === $range['e'] - $range['s'] + 1)) {
                 $intersectingBlackRuns[] = $j;
             }
         }
@@ -78,6 +77,11 @@ abstract class AbstractRuleJ54
         return $intersectingBlackRuns;
     }
 
+    /**
+     * @param $row
+     * @param $cellNumber
+     * @return mixed
+     */
     protected function getSegmentStart($row, $cellNumber)
     {
         for ($i=$cellNumber-1;$i>=0;$i--) {
@@ -88,6 +92,11 @@ abstract class AbstractRuleJ54
         return $i+1;
     }
 
+    /**
+     * @param $row
+     * @param $cellNumber
+     * @return mixed
+     */
     protected function getSegmentEnd($row, $cellNumber)
     {
         for ($i=$cellNumber+1;$i<count($row);$i++) {
@@ -173,9 +182,11 @@ abstract class AbstractRuleJ54
     }
 
     /**
-     * @param AnyCell[] $row
+     * @param array $row
      * @param $pos
      * @param $allowedCellTypes
+     * @param null $max
+     * @return bool
      */
     protected function findFirstCellAfter(array $row, $pos, $allowedCellTypes, $max = null)
     {
@@ -193,9 +204,11 @@ abstract class AbstractRuleJ54
     }
 
     /**
-     * @param AnyCell[] $row
+     * @param array $row
      * @param $pos
      * @param $allowedCellTypes
+     * @param null $min
+     * @return bool
      */
     protected function findFirstCellBefore(array $row, $pos, $allowedCellTypes, $min = null)
     {
@@ -222,14 +235,14 @@ abstract class AbstractRuleJ54
         $this->updateCounter = 0;
         $this->row = &$row;
         $this->runRanges = &$r;
-        $this->_apply($row, $blackRuns, $r);
+        return $this->_apply($row, $blackRuns, $r);
     }
 
     /**
      * @param AnyCell[] $row
      * @param array $blackRuns
      * @param array $r
-     * @return
+     * @return bool|null returns true only if the row is completely solved
      */
     abstract protected function _apply(array $row, array $blackRuns, array $r);
 

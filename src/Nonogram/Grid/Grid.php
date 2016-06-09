@@ -31,14 +31,19 @@ class Grid
     private $solvingStatistics;
 
     /**
-     * @param \Nonogram\Grid\Provider\AnyGridProvider $provider
+     * @param array $solvingStatistics
      */
-    public function setCells(\Nonogram\Grid\Provider\AnyGridProvider $provider)
+    public function setSolvingStatistics($solvingStatistics)
     {
-        $this->cells = $provider->provide();
-        if(method_exists($provider,'getSolvingStatistics')) {
-            $this->solvingStatistics = $provider->getSolvingStatistics();
-        }
+        $this->solvingStatistics = $solvingStatistics;
+    }
+
+    /**
+     * @param array $cells
+     */
+    public function setCells(array $cells)
+    {
+        $this->cells = $cells;
     }
 
     /**

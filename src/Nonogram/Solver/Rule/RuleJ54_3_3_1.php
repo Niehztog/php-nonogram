@@ -6,15 +6,21 @@ use Nonogram\Cell\AnyCell;
 
 class RuleJ54_3_3_1 extends AbstractRuleJ54
 {
-    public function __construct()
+
+    /**
+     * RuleJ54_3_3_1 constructor.
+     * @param \Nonogram\Cell\Factory $cellFactory
+     */
+    public function __construct(\Nonogram\Cell\Factory $cellFactory)
     {
-        parent::__construct();
+        parent::__construct($cellFactory);
     }
 
     /**
      * This rule is designed for solving the situations that the range
      * of black run j do not overlap the range of black run j − 1
      * or j + 1.
+     * Case: Cell crjs is black
      *
      * @param AnyCell[] $row
      * @param array $blackRuns

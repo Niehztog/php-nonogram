@@ -6,9 +6,14 @@ use Nonogram\Cell\AnyCell;
 
 class RuleJ54_3_2 extends AbstractRuleJ54
 {
-    public function __construct()
+
+    /**
+     * RuleJ54_3_2 constructor.
+     * @param \Nonogram\Cell\Factory $cellFactory
+     */
+    public function __construct(\Nonogram\Cell\Factory $cellFactory)
     {
-        parent::__construct();
+        parent::__construct($cellFactory);
     }
 
     /**
@@ -58,14 +63,16 @@ class RuleJ54_3_2 extends AbstractRuleJ54
             $B = $this->findSegmentsInRange($row, $r[$j], array(AnyCell::TYPE_BOX, AnyCell::TYPE_UNKNOWN), $LB-1);
             $b = count($B);
             for($i=1; $i<=$b; $i++) {
-                $coveringBlackRuns = $this->findCoveringBlackRuns(range($B[$i]['s'],$B[$i]['e']), $r);
-                if(1 === count($coveringBlackRuns)) {
-                    foreach(range($B[$i]['s'],$B[$i]['e']) as $l) {
-                        $this->determineCell($l, AnyCell::TYPE_EMPTY);
+                $coveringBlackRuns = $this->findCoveringBlackRuns($B[$i]['s'],$B[$i]['e'], $r);
+                foreach($coveringBlackRuns as $coveringBlackRun) {
+                    if($coveringBlackRun !== $j && $blackRuns[$coveringBlackRun-1]<$LB) {
+                        continue 2;
                     }
                 }
+                foreach(range($B[$i]['s'],$B[$i]['e']) as $l) {
+                    $this->determineCell($l, AnyCell::TYPE_EMPTY);
+                }
             }
-
         }
     }
 }

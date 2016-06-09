@@ -6,9 +6,14 @@ use Nonogram\Cell\AnyCell;
 
 class RuleJ54_1_5 extends AbstractRuleJ54
 {
-    public function __construct()
+
+    /**
+     * RuleJ54_1_5 constructor.
+     * @param \Nonogram\Cell\Factory $cellFactory
+     */
+    public function __construct(\Nonogram\Cell\Factory $cellFactory)
     {
-        parent::__construct();
+        parent::__construct($cellFactory);
     }
 
     /**
@@ -56,7 +61,7 @@ class RuleJ54_1_5 extends AbstractRuleJ54
                 continue;
             }
 
-            $intersectingBlackRuns = $this->findCoveringBlackRuns(array($i), $r);
+            $intersectingBlackRuns = $this->findCoveringBlackRuns($i, $i, $r);
             if (empty($intersectingBlackRuns)) {
                 continue;
             }

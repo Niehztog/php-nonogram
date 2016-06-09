@@ -1,0 +1,102 @@
+<html><head><title></title>
+<style>
+div {
+    font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 13px;
+}
+div {box-sizing:border-box;margin: 0;padding: 0;text-align:center;}
+div.container {display:flex;flex-wrap: nowrap;flex-direction: row;align-items:flex-end;}
+div.container2 {display:flex;flex-wrap: nowrap;flex-direction: column;}
+div.container > div.grid {display:flex;flex-direction:column;}
+div.container > div.grid > div.row {display:flex;flex-direction:row;}
+div.container > div.grid > div.row > div.cell {border: 1px black solid;width:15px; height:15px;}
+div.container > div.grid > div.row > div.cell:nth-child(5n) {border-right: 2px black solid;}
+div.container > div.grid > div.row:nth-child(5n) > div.cell {border-bottom: 2px black solid;}
+div.container > div.grid > div.row > div.cell:nth-child(5n+1) {border-left: 2px black solid;}
+div.container > div.grid > div.row:nth-child(5n+1) > div.cell {border-top: 2px black solid;}
+div.container > div.grid > div.row > div.cell.block {background-color: black;}
+div.container > div.grid > div.row > div.cell.empty {background-color: white;}
+div.container > div.columnlabels {display:flex;align-items:flex-end;}
+div.container > div.columnlabels > div.cell {border-left:1px black solid;border-bottom:1px black solid;border-right:1px black solid;width:15px;}
+div.container > div.columnlabels > div.cell:nth-child(5n) {border-right: 2px black solid;}
+div.container > div.columnlabels > div.cell:nth-child(5n+1) {border-left: 2px black solid;}
+div.container > div.rowlabels {display:flex;flex-direction:column;align-items:flex-end;}
+div.container > div.rowlabels > div.cell {padding-right:5px;border-top:1px black solid;border-bottom:1px black solid;border-right:1px black solid;height:15px;}
+div.container > div.rowlabels > div.cell:nth-child(5n) {border-bottom: 2px black solid;}
+div.container > div.rowlabels > div.cell:nth-child(5n+1) {border-top: 2px black solid;}
+</style>
+</head><body>
+<div class="container">
+<div class="rowlabels">
+<div class="cell">1&nbsp;&nbsp;1</div>
+<div class="cell">1&nbsp;&nbsp;1&nbsp;&nbsp;1</div>
+<div class="cell">1&nbsp;&nbsp;4</div>
+<div class="cell">1&nbsp;&nbsp;4</div>
+<div class="cell">1&nbsp;&nbsp;1</div>
+<div class="cell">1&nbsp;&nbsp;1</div>
+<div class="cell">1&nbsp;&nbsp;1&nbsp;&nbsp;3&nbsp;&nbsp;1&nbsp;&nbsp;1</div>
+<div class="cell">5&nbsp;&nbsp;2&nbsp;&nbsp;1&nbsp;&nbsp;1</div>
+<div class="cell">4&nbsp;&nbsp;3</div>
+<div class="cell">1&nbsp;&nbsp;2&nbsp;&nbsp;3</div>
+<div class="cell">3&nbsp;&nbsp;4</div>
+<div class="cell">2&nbsp;&nbsp;2&nbsp;&nbsp;5</div>
+<div class="cell">4&nbsp;&nbsp;7</div>
+<div class="cell">5&nbsp;&nbsp;2&nbsp;&nbsp;6</div>
+<div class="cell">5&nbsp;&nbsp;2&nbsp;&nbsp;4</div>
+</div>
+<div class="container container2">
+<div class="columnlabels">
+<div class="cell">3<br/>4</div>
+<div class="cell">2<br/>4</div>
+<div class="cell">4<br/>3</div>
+<div class="cell">2<br/>3</div>
+<div class="cell">1<br/>1<br/>2</div>
+<div class="cell">1<br/>2</div>
+<div class="cell">1<br/>1<br/>1</div>
+<div class="cell">3<br/>1<br/>2<br/>2</div>
+<div class="cell">1<br/>2<br/>1<br/>1<br/>1<br/>1</div>
+<div class="cell">2<br/>2</div>
+<div class="cell">1<br/>2<br/>3</div>
+<div class="cell">1<br/>2<br/>1<br/>5</div>
+<div class="cell">3<br/>9</div>
+<div class="cell">2<br/>7</div>
+<div class="cell">1<br/>8</div>
+</div>
+<div class="grid">
+<div class="row">
+<div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div></div>
+<div class="row">
+<div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div></div>
+<div class="row">
+<div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div></div>
+<div class="row">
+<div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div></div>
+<div class="row">
+<div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div></div>
+<div class="row">
+<div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div></div>
+<div class="row">
+<div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div></div>
+<div class="row">
+<div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div></div>
+<div class="row">
+<div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div></div>
+<div class="row">
+<div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div></div>
+<div class="row">
+<div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div></div>
+<div class="row">
+<div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div></div>
+<div class="row">
+<div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div></div>
+<div class="row">
+<div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div></div>
+<div class="row">
+<div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell empty">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div><div class="cell block">&nbsp;</div></div>
+</div>
+</div>
+</body></html>

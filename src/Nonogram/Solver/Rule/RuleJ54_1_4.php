@@ -6,9 +6,14 @@ use Nonogram\Cell\AnyCell;
 
 class RuleJ54_1_4 extends AbstractRuleJ54
 {
-    public function __construct()
+
+    /**
+     * RuleJ54_1_4 constructor.
+     * @param \Nonogram\Cell\Factory $cellFactory
+     */
+    public function __construct(\Nonogram\Cell\Factory $cellFactory)
     {
-        parent::__construct();
+        parent::__construct($cellFactory);
     }
 
     /**
@@ -52,7 +57,7 @@ class RuleJ54_1_4 extends AbstractRuleJ54
             ) {
                 continue;
             }
-            $intersectingBlackRuns = $this->findCoveringBlackRuns(array($i-1, $i, $i+1), $r);
+            $intersectingBlackRuns = $this->findCoveringBlackRuns($i-1, $i+1, $r);
 
             $maxL = $this->findLongestRun($intersectingBlackRuns, $blackRuns);
             $segmentLength = $this->getSegmentLength($row, $i);

@@ -6,9 +6,14 @@ use Nonogram\Cell\AnyCell;
 
 class RuleJ54_1_3 extends AbstractRuleJ54
 {
-    public function __construct()
+
+    /**
+     * RuleJ54_1_3 constructor.
+     * @param \Nonogram\Cell\Factory $cellFactory
+     */
+    public function __construct(\Nonogram\Cell\Factory $cellFactory)
     {
-        parent::__construct();
+        parent::__construct($cellFactory);
     }
 
     /**
@@ -31,7 +36,7 @@ class RuleJ54_1_3 extends AbstractRuleJ54
                 }
 
                 //get all other black runs covering crjs
-                $intersectingBlackRuns = $this->findCoveringBlackRuns(array($r[$j][$startEnd]), $r);
+                $intersectingBlackRuns = $this->findCoveringBlackRuns($r[$j][$startEnd], $r[$j][$startEnd], $r);
 
                 //delete the black run $j from the results
                 if (false !== ($key = array_search($j, $intersectingBlackRuns))) {

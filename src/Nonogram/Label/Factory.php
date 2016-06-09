@@ -2,45 +2,50 @@
 
 namespace Nonogram\Label;
 
-use Nonogram\Label\Provider\LabelProviderGrid;
-use Nonogram\Label\Provider\LabelProviderFile;
-
-class Factory
+class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareInterface
 {
+    use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
+
     /**
-     * @param \Nonogram\Grid $grid
-     * @return Label
+     * @var LabelProviderCells
      */
-    public function getForGrid(\Nonogram\Grid\Grid $grid)
+    private $labelProviderCells;
+
+    /**
+     * Factory constructor.
+     * @param LabelProviderCells $labelProviderCells
+     */
+    public function __construct(LabelProviderCells $labelProviderCells)
     {
-        return $this->createInstance(new LabelProviderGrid($grid));
+        $this->labelProviderCells = $labelProviderCells;
     }
 
     /**
-     * @param $fileName
+     * @param array $cells
      * @return Label
      */
-    public function getForFile($fileName)
+    public function getForCells(array $cells)
     {
-        $fp = new LabelProviderFile();
-        $fp->load($fileName);
-        return $this->createInstance($fp);
+        $labelsRaw = $this->labelProviderCells->generateLabels($cells);
+        return $this->getFromRaw($labelsRaw);
     }
 
     /**
-     * @param Provider\AnyLabelProvider $labelProvider
-     * @return Label
+     * @param array $labelsRaw
+     * @return object
      */
-    private function createInstance(\Nonogram\Label\Provider\AnyLabelProvider $labelProvider)
+    public function getFromRaw(array $labelsRaw)
     {
-        $label = new Label();
+        if(empty($labelsRaw)) {
+            throw new \InvalidArgumentException('empty label array');
+        }
 
-        $labelsCol = $labelProvider->getLabelsForColumn();
-        $labelsRow = $labelProvider->getLabelsForRow();
+        $label = $this->container->get('label');
 
-        $label->setCol($labelsCol);
-        $label->setRow($labelsRow);
+        $label->setCol($labelsRaw['columns']);
+        $label->setRow($labelsRaw['rows']);
 
         return $label;
     }
+
 }

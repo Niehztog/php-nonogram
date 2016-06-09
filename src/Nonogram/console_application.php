@@ -13,5 +13,7 @@ require $rootDir . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 $container = new ContainerBuilder();
 $loader = new YamlFileLoader($container, new FileLocator(realpath(__DIR__.DIRECTORY_SEPARATOR.'Config')));
 $loader->load('container.yml');
+$container->setParameter('application.root_directory', $rootDir);
+$container->compile();
 $app = $container->get('application');
 $app->run();

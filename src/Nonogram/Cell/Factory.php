@@ -2,8 +2,27 @@
 
 namespace Nonogram\Cell;
 
-class Factory
+class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareInterface
 {
+    use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
+
+    /**
+     * @var bool
+     */
+    private $setStatusHidden = true;
+
+    /**
+     * @param boolean $setStatusHidden
+     */
+    public function setStatusHidden($setStatusHidden)
+    {
+        $this->setStatusHidden = (bool)$setStatusHidden;
+    }
+
+    /**
+     * @param $type
+     * @return CellWrapper
+     */
     public function getByType($type)
     {
         switch($type) {
@@ -15,18 +34,35 @@ class Factory
         return $this->getUnknown();
     }
 
+    /**
+     * @return CellWrapper
+     */
     public function getBox()
     {
-        return new CellWrapper(new CellBox());
+        $cell = $this->container->get('cell_box');
+        if(!$this->setStatusHidden) {
+            $cell->fill();
+        }
+        return $cell;
     }
 
+    /**
+     * @return CellWrapper
+     */
     public function getEmpty()
     {
-        return new CellWrapper(new CellEmpty());
+        $cell = $this->container->get('cell_empty');
+        if(!$this->setStatusHidden) {
+            $cell->mark();
+        }
+        return $cell;
     }
 
+    /**
+     * @return CellWrapper
+     */
     public function getUnknown()
     {
-        return new CellWrapper(null);
+        return $this->container->get('cell_wrapper');
     }
 }

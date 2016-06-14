@@ -15,7 +15,7 @@ class SolverTest extends AbstractTest
         $filePathFull = $rootDir . 'data' . DIRECTORY_SEPARATOR . 'Levels' . DIRECTORY_SEPARATOR;
 
         $finder = new \Symfony\Component\Finder\Finder();
-        $finder->files()->in($filePathFull)->name('*.dat');
+        $finder->files()->in($filePathFull)->name('*.dat')->notName('sunflower_25x25.dat');
 
         $levelList = array();
         foreach ($finder as $file) {

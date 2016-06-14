@@ -11,3 +11,5 @@ php:
 before_script:
   - composer self-update || true
   - composer --prefer-source --dev install
+
+script: ./vendor/bin/phpunit --bootstrap vendor/autoload.php --configuration phpunit.xml

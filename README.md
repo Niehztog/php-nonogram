@@ -9,12 +9,17 @@ It could be used as a base to implement a PHP driven server side implementation 
 ## Features:
 - 100% console application
 - object-oriented software design
-- uses some symphony components
+- uses composer and symphony container
 - load nonogram grid from file and display it in console
 - makes use of nice ASCII arts for better visibility
 - supports basic keyboard interaction for manual solving, press "b" to mark a cell as block and "e" to mark it as empty
 - supports automatic puzzle solving using logical rules described in [\[1\]](http://debut.cis.nctu.edu.tw/Publications/pdfs/J54.pdf "An efficient algorithm for solving nonograms") \(works for simpler nonograms only\)
-- support for writing nonogram designs to files, either the block layout, or only the row/column labels
+- supports html export of puzzles
+- application fully configurable via configuration file (Nonogram/Config/container.yml)
+- unittest coverage of most important code areas
+- support for writing nonogram puzzles to different file formats
+ - supported input formats: *.xml, *.yml, *.dat, *.pdf
+ - supported output formats: *.xml, *.yml, *.dat, *.html
 
 ## Future plans:
 - implement 'chronological backtracking' algorithm for autosolving more complex puzzles

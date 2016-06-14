@@ -4,7 +4,6 @@ namespace Nonogram\LevelParser;
 
 class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface, LevelParserMetaDataInterface
 {
-
     /**
      * @var \Nonogram\Label\Label
      */
@@ -75,7 +74,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
             }
 
             //detect lines
-            if (1 === preg_match('~1\.5 w 0 0 0 RG ([0-9]+\.[0-9]+) ([0-9]+\.[0-9]+) m ([0-9]+\.[0-9]+) ([0-9]+\.[0-9]+) l ([0-9]+\.[0-9]+) ([0-9]+\.[0-9]+) l ([0-9]+\.[0-9]+) ([0-9]+\.[0-9]+) l ([0-9]+\.[0-9]+) ([0-9]+\.[0-9]+) l ([0-9]+\.[0-9]+) ([0-9]+\.[0-9]+) l ([0-9]+\.[0-9]+) ([0-9]+\.[0-9]+) l S~', $content, $matches)) {
+            if (1 === preg_match('~1\.5 w 0 0 0 RG ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) m ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l S~', $content, $matches)) {
                 $lineX1 = $matches[1];
                 //$lineY1 = $matches[2];
                 //$lineX2 = $matches[3];
@@ -110,19 +109,15 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
             $text = $matches[6];
 
             if (!is_numeric($text)) {
-                if('751' === $coordsY && 0 === strpos($text, 'Web Paint-by-Number Puzzle #')) {
+                if ('751' === $coordsY && 0 === strpos($text, 'Web Paint-by-Number Puzzle #')) {
                     $this->id = (int) substr($text, 28);
-                }
-                elseif('732.80' === $coordsY) {
+                } elseif ('732.80' === $coordsY) {
                     $this->title = $text;
-                }
-                elseif('717.20' === $coordsY && 0 === strpos($text, 'created by ')) {
+                } elseif ('717.20' === $coordsY && 0 === strpos($text, 'created by ')) {
                     $this->author = substr($text, 11);
-                }
-                elseif('701.60' === $coordsY) {
+                } elseif ('701.60' === $coordsY) {
                     $this->created = $text;
-                }
-                elseif(0 === strpos($text, ' Copyright ')) {
+                } elseif (0 === strpos($text, ' Copyright ')) {
                     $this->copyright = '(c)' . $text;
                 }
 
@@ -158,7 +153,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
         //find gaps
         $previousCoordX = 0;
         foreach ($array['columns'] as $key => $val) {
-            if ($previousCoordX > 0 && floor($previousCoordX + $smallestDistanceX) !== floor($key)) {
+            if ($previousCoordX > 0 && floor($key) - floor($previousCoordX + $smallestDistanceX) > 1) {
                 for ($i=$previousCoordX + $smallestDistanceX;floor($i)<floor($key);$i=$i+$smallestDistanceX) {
                     $this->array_insert_before($array['columns'], $key, array((string)$i => array()));
                 }
@@ -167,7 +162,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
         }
         $previousCoordY = 0;
         foreach ($array['rows'] as $key => $val) {
-            if ($previousCoordY > 0 && floor($previousCoordY - $smallestDistanceY) !== floor($key)) {
+            if ($previousCoordY > 0 && floor($previousCoordY - $smallestDistanceY) - floor($key) > 1) {
                 for ($i=$previousCoordY - $smallestDistanceY;floor($i)>floor($key);$i=$i-$smallestDistanceY) {
                     $this->array_insert_before($array['rows'], $key, array((string)$i => array()));
                 }
@@ -274,5 +269,4 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
     {
         return 'pdf';
     }
-    
 }

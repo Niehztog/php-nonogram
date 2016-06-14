@@ -29,7 +29,7 @@ class RuleJ54_1_2 extends AbstractRuleJ54
         $k = count($blackRuns);
 
         foreach ($row as $i => $cell) {
-            if ($i < $r[1]['s'] || $i > $r[$k]['e']) {
+            if (empty($r) || $i < $r[1]['s'] || $i > $r[$k]['e']) {
                 $this->determineCell($i, \Nonogram\Cell\AnyCell::TYPE_EMPTY);
             }
             for ($j=1;$j<$k;$j++) {
@@ -37,6 +37,10 @@ class RuleJ54_1_2 extends AbstractRuleJ54
                     $this->determineCell($i, AnyCell::TYPE_EMPTY);
                 }
             }
+        }
+
+        if(empty($r)) {
+            return self::RESULT_LINE_SOLVED;
         }
     }
 }

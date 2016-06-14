@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Niehztog/php-nonogram.svg?branch=master)](https://travis-ci.org/Niehztog/php-nonogram)
+
 # PHP Nonogram
 
 Implementation of the japanese logic puzzle game "nonogram" in PHP.

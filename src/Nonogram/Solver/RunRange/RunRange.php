@@ -68,9 +68,11 @@ class RunRange
         }
 
         $r = array();
-        $n = $colNumber != null ? $this->labels->getSizeY() : $this->labels->getSizeX();
-
         $labels = $colNumber != null ? $this->labels->getLabelsForColumn($colNumber) : $this->labels->getLabelsForRow($rowNumber);
+        if(empty($labels)) {
+            return $r;
+        }
+        $n = $colNumber != null ? $this->labels->getSizeY() : $this->labels->getSizeX();
         $k = count($labels);
 
         $r[1]['s'] = 0;

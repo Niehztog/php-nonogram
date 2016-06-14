@@ -1,7 +1,5 @@
 <?php
 
-use Nonogram\Cell\AnyCell;
-
 class SolverTest extends AbstractTest
 {
     /**
@@ -47,25 +45,17 @@ class SolverTest extends AbstractTest
         $labelsRaw['rows'] = $labels->getRow();
         $labelFactory = new \Nonogram\Label\Factory(new \Nonogram\Label\LabelProviderCells());
         $labelFactory->setContainer($this->container);
-        $parserYaml = new \Nonogram\LevelParser\LevelParserUniversalWrapper(
-            new \Nonogram\LevelParser\LevelParserYaml(
-                $labelFactory,
-                new \Symfony\Component\Yaml\Parser()
-            )
+        $parserYaml = new \Nonogram\LevelParser\LevelParserYaml(
+            $labelFactory,
+            new \Symfony\Component\Yaml\Parser()
         );
-        $parserYaml->setSolver($this->container->get('solver'));
+        $solver = $this->container->get('solver');
         $yamlDumper = new \Symfony\Component\Yaml\Dumper();
         $parserYaml->setRawData($yamlDumper->dump($labelsRaw));
-        $cellsActual = $parserYaml->getGrid();
+        $labelsLoaded = $parserYaml->getLabels();
+        $cellsActual = $solver->solve($labelsLoaded);
 
-        foreach ($cellsExpected as $i => $row) {
-            foreach ($row as $j => $cell) {
-                /*if ($cellsActual[$i][$j]->getType() === AnyCell::TYPE_UNKNOWN) {
-                    continue;
-                }*/
-                $this->assertEquals($cellsExpected[$i][$j]->getType(), $cellsActual[$i][$j]->getType(), $filename);
-            }
-        }
+        $this->assertGridsEqual($cellsExpected, $cellsActual, $filename);
     }
 
     /**

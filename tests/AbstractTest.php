@@ -49,4 +49,37 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $this->container->compile();
     }
 
+    protected function convertRowRawToActual($rowString)
+    {
+        $field = array();
+        for ($i = 0; $i < strlen($rowString); $i++) {
+            switch ($rowString{$i}) {
+                case 'U':
+                    $cell = $this->cellFactory->getUnknown();
+                    break;
+                case 'B':
+                    $cell = $this->cellFactory->getBox();
+                    break;
+                case 'E':
+                    $cell = $this->cellFactory->getEmpty();
+                    break;
+            }
+            $field[] = $cell;
+        }
+
+        return $field;
+    }
+
+    protected function assertGridsEqual(array $cellsExpected, array $cellsActual, $filename = '')
+    {
+        foreach ($cellsExpected as $i => $row) {
+            foreach ($row as $j => $cell) {
+                /*if ($cellsActual[$i][$j]->getType() === AnyCell::TYPE_UNKNOWN) {
+                    continue;
+                }*/
+                $this->assertEquals($cellsExpected[$i][$j]->getType(), $cellsActual[$i][$j]->getType(), $filename);
+            }
+        }
+    }
+
 }

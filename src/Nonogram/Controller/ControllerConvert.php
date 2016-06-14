@@ -14,6 +14,11 @@ class ControllerConvert extends AbstractSubController implements AnyController
     private $gridSaver;
 
     /**
+     * @var string
+     */
+    private $defaultDir;
+
+    /**
      * ControllerConvert constructor.
      * @param \Nonogram\Grid\Factory $gridFactory
      * @param \Nonogram\View\ViewWritableInterface $view
@@ -36,12 +41,41 @@ class ControllerConvert extends AbstractSubController implements AnyController
      */
     protected function executeAction($urn)
     {
-        //$result = preg_match('~https:\/\/raw\.githubusercontent\.com\/Substance12\/Picroxx\/master\/game\/courses\/([a-z]+)\/([a-z]+)\/([a-z0-9]+)\/([a-z]+)\.lua~', $urn, $matches);
-        //$filenameSave = 'C:\\Users\\Nils\\Documents\\php-nonogram\\data\\Levels\\mariopicross\\' . $matches[2] . '-'. $matches[3] . '-'. $matches[4] . '.' . $this->view->getFileExtension();
+        $filenameSave = basename($urn);
+        if($filenameSave) {
+            $filenameSave = substr_replace($filenameSave, $this->view->getFileExtension(), strrpos($urn, '.') + 1);
+        }
+        else {
+            $id = $this->view->getGrid()->getId();
+            if(empty($id)) {
+                throw new \RuntimeException('Puzzle needs to provide an id value in order to determine filename for writing.');
+            }
+            $filenameSave = $id . '.' . $this->view->getFileExtension();
+        }
 
-        $filenameSave = substr_replace($urn, $this->view->getFileExtension(), strrpos($urn, '.') +1);
-        $this->gridSaver->save($filenameSave);
+        if($this->defaultDir && file_exists($this->defaultDir) && is_writable($this->defaultDir)) {
+            $dir = $this->defaultDir;
+        }
+        else {
+            $dir = dirname($urn);
+            if(!$dir || !file_exists($dir) || !is_writable($dir)) {
+                throw new \RuntimeException('Either provide a default directory for saving puzzles or make sure the path \''.$dir.'\' is writeable.');
+            }
+        }
 
-        echo 'File written: ' . $filenameSave . PHP_EOL;
+        $fullPathSave = $dir . DIRECTORY_SEPARATOR . $filenameSave;
+
+        $this->gridSaver->save($fullPathSave);
+
+        echo 'File written: ' . $fullPathSave . PHP_EOL;
     }
+
+    /**
+     * @param string $defaultDir
+     */
+    public function setDefaultDirectory($defaultDir)
+    {
+        $this->defaultDir = $defaultDir;
+    }
+
 }

@@ -77,7 +77,11 @@ abstract class AbstractSubController implements AnyController
         foreach($this->inputParameter['level_filename'] as $key => $urn) {
 
             if (is_dir($urn)) {
-                $this->fileFinder->files()->in($urn)->name('*.yml');
+                $this->fileFinder->files()->in($urn);
+                foreach($this->gridFactory->getFileExtensions() as $ext) {
+                    $this->fileFinder->name('*.'.$ext);
+                }
+                
                 foreach ($this->fileFinder as $file) {
                     $this->inputParameter['level_filename'][] = $file->getRealpath();
                 }
@@ -97,12 +101,10 @@ abstract class AbstractSubController implements AnyController
         foreach($this->inputParameter['level_filename'] as $urn) {
             try {
                 $grid = $this->gridFactory->get($urn);
-                $solvingStatistics = $grid->getSolvingStatistics();
-                if(null !== $solvingStatistics) {
-                    $this->addSolvingStatistics($solvingStatistics);
-                }
                 $this->view->setGrid($grid);
-                $this->view->setTitle(basename($urn));
+
+
+
                 if(!($this->view instanceof ViewWritableInterface && $this->view->supportsMultiple())) {
                     //execute after adding one
                     $this->executeAction($urn);
@@ -130,7 +132,7 @@ abstract class AbstractSubController implements AnyController
     /**
      * @param array $solvingStatistics
      */
-    private function addSolvingStatistics(array $solvingStatistics)
+    protected function addSolvingStatistics(array $solvingStatistics)
     {
         $this->solvingStatistics = $solvingStatistics;
         foreach($solvingStatistics as $key => $value) {

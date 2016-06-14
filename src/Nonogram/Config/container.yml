@@ -1,25 +1,34 @@
 parameters:
     application.root_directory: '' #will be set from outside
-    #application.level_filename: '%application.root_directory%data/Levels/sheep_25x25.yml'
-    #application.level_filename: '%application.root_directory%data/Levels/duck_15x15.yml'
-    #application.level_filename: '%application.root_directory%data/Levels/cat_20x20.yml'
-    #application.level_filename: '%application.root_directory%data/Levels/person_with_dog_15x15.yml'
-    #application.level_filename: '%application.root_directory%data/Levels/ship_10x10.yml'
-    #application.level_filename: '%application.root_directory%data/Levels/face_10x10.yml'
-    #application.level_filename: '%application.root_directory%data/Levels/airplane_25x25.yml'
-    #application.level_filename: '%application.root_directory%data/Levels/sunflower_25x25.yml'
-    #application.level_filename: '%application.root_directory%data/Levels/monkey_15x15.yml'
-    #application.level_filename: '%application.root_directory%data/Levels/mariopicross'
-    #application.level_filename: '%application.root_directory%data/Levels/mariopicross/star-level8-b.yml'
+    application.level_directory: '%application.root_directory%data/Levels'
+    #application.level_filename: '%application.level_directory%/sheep_25x25.dat'
+    #application.level_filename: '%application.level_directory%/sheep_25x25.yml'
+    #application.level_filename: '%application.level_directory%/duck_15x15.yml'
+    #application.level_filename: '%application.level_directory%/cat_20x20.yml'
+    #application.level_filename: '%application.level_directory%/person_with_dog_15x15.yml'
+    #application.level_filename: '%application.level_directory%/ship_10x10.yml'
+    #application.level_filename: '%application.level_directory%/face_10x10.yml'
+    #application.level_filename: '%application.level_directory%/airplane_25x25.yml'
+    #application.level_filename: '%application.level_directory%/sunflower_25x25.yml'
+    #application.level_filename: '%application.level_directory%/monkey_15x15.yml'
+    #application.level_filename: '%application.level_directory%/mariopicross'
+    #application.level_filename: '%application.level_directory%/mariopicross/star-level8-b.yml'
     #application.level_filename: 'https://raw.githubusercontent.com/Substance12/Picroxx/master/game/courses/mariopicross/easy/level1/a.lua'
-    application.level_filename: 'http://webpbn.com/XMLpuz.cgi?id=[1-20]'
+    #application.level_filename: 'http://webpbn.com/XMLpuz.cgi?id=1'
+    #application.level_filename: 'http://webpbn.com/XMLpuz.cgi?id=[1-20]'
+    #application.level_filename: 'http://webpbn.com/XMLpuz.cgi?id=3875'
+    #application.level_filename: 'http://webpbn.com/t/webpbn-[1-20]-1.pdf'
+    #application.level_filename: 'http://webpbn.com/t/webpbn-3875-1.pdf'
+    application.level_filename: 'http://webpbn.com/t/webpbn-27961-1.pdf'
+    #application.level_filename: 'http://webpbn.com/t/webpbn-27944-1.pdf'
+    #application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-10-1.pdf'
     #application.level_filename:
-    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-a.yml'
-    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-b.yml'
-    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-c.yml'
-    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-d.yml'
-    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-e.yml'
-    #    - '%application.root_directory%data/Levels/mariopicross/easy-level2-f.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-a.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-b.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-c.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-d.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-e.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-f.yml'
 
     application.html_export.solved: true
     application.html_export.cellsize: 20
@@ -45,7 +54,9 @@ services:
     controller_convert:
         public: false
         class: Nonogram\Controller\ControllerConvert
-        arguments: ['@grid_factory', '@view_html', '@finder', '@grid_saver_file']
+        arguments: ['@grid_factory', '@view_xml', '@finder', '@grid_saver_file']
+        calls:
+            - [setDefaultDirectory, [%application.level_directory%/webpbn]]
 
 
     view_text:
@@ -58,6 +69,9 @@ services:
     view_textmin:
         public: false
         class: Nonogram\View\ViewTextMinimal
+    view_xml:
+        public: false
+        class: Nonogram\View\ViewXml
     view_html:
         public: false
         class: Nonogram\View\ViewHtml
@@ -78,11 +92,13 @@ services:
         shared: false
         public: true
         class: Nonogram\Grid\Grid
+        calls:
+            - [setSolver, ['@solver']]
 
 
     data_source_factory:
         public: false
-        class: Nonogram\LevelDataSource\LevelDataSourceFactory
+        class: Nonogram\LevelDataSource\Factory
         calls:
             - [attachDataSource, ['@data_source_file']]
             - [attachDataSource, ['@data_source_url']]
@@ -98,12 +114,13 @@ services:
 
     level_parser_factory:
         public: false
-        class: Nonogram\LevelParser\LevelParserFactory
+        class: Nonogram\LevelParser\Factory
         calls:
             - [attachParser, ['@level_parser_yaml']]
             - [attachParser, ['@level_parser_dat']]
             - [attachParser, ['@level_parser_lua']]
             - [attachParser, ['@level_parser_xml']]
+            - [attachParser, ['@level_parser_pdf']]
 
     level_parser_yaml:
         public: false
@@ -113,49 +130,22 @@ services:
     level_parser_dat:
         public: false
         class: Nonogram\LevelParser\LevelParserDat
-        arguments: ['@cell_factory']
+        arguments: ['@label_factory', '@cell_factory']
 
     level_parser_lua:
         public: false
         class: Nonogram\LevelParser\LevelParserLua
-        arguments: ['@cell_factory']
+        arguments: ['@label_factory', '@cell_factory']
 
     level_parser_xml:
         public: false
         class: Nonogram\LevelParser\LevelParserXml
         arguments: ['@label_factory']
 
-    level_parser_yaml_decorator:
+    level_parser_pdf:
         public: false
-        class: Nonogram\LevelParser\LevelParserUniversalWrapper
-        decorates: level_parser_yaml
-        arguments: ['@level_parser_yaml_decorator.inner']
-        calls:
-            - [setSolver, ['@solver']]
-
-    level_parser_dat_decorator:
-        public: false
-        class: Nonogram\LevelParser\LevelParserUniversalWrapper
-        decorates: level_parser_dat
-        arguments: ['@level_parser_dat_decorator.inner']
-        calls:
-            - [setLabelFactory, ['@label_factory']]
-
-    level_parser_lua_decorator:
-        public: false
-        class: Nonogram\LevelParser\LevelParserUniversalWrapper
-        decorates: level_parser_lua
-        arguments: ['@level_parser_lua_decorator.inner']
-        calls:
-            - [setLabelFactory, ['@label_factory']]
-
-    level_parser_xml_decorator:
-        public: false
-        class: Nonogram\LevelParser\LevelParserUniversalWrapper
-        decorates: level_parser_xml
-        arguments: ['@level_parser_xml_decorator.inner']
-        calls:
-            - [setSolver, ['@solver']]
+        class: Nonogram\LevelParser\LevelParserPdf
+        arguments: ['@label_factory']
 
 
     cell_factory:

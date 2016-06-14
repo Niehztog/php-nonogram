@@ -2,28 +2,14 @@
 
 namespace Nonogram\LevelParser;
 
-class LevelParserDat extends AbstractLevelParser implements LevelParserGridInterface
+class LevelParserDat extends AbstractLevelParserGrid implements LevelParserInterface
 {
 
     /**
-     * @var \Nonogram\Cell\Factory
+     * @var string
      */
-    private $cellFactory;
-
-    public function __construct(\Nonogram\Cell\Factory $cellFactory)
-    {
-        $this->cellFactory = $cellFactory;
-    }
-
-    /**
-     * @param string $urn
-     * @return bool
-     */
-    public function canHandle($urn)
-    {
-        return 'dat' === $this->getExtension($urn);
-    }
-
+    const BOX_CHAR = '1';
+    
     /**
      * @return \Nonogram\Cell\AnyCell[][]
      */
@@ -42,17 +28,21 @@ class LevelParserDat extends AbstractLevelParser implements LevelParserGridInter
     }
 
     /**
-     * @param $char
-     * @return \Nonogram\Cell\CellBox|\Nonogram\Cell\CellEmpty
+     * Returns the char representing a Box in the grid
+     * @return string
      */
-    private function convertRawToCell($char)
-    {$this->cellFactory->setStatusHidden(false);
-        if ('1' === $char) {
-            $cell = $this->cellFactory->getBox();
-        } else {
-            $cell = $this->cellFactory->getEmpty();
-        }
-        return $cell;
+    protected function getBoxChar()
+    {
+        return self::BOX_CHAR;
     }
-    
+
+    /**
+     * This method returns the supported file extension
+     * @return string
+     */
+    public function getFileExtension()
+    {
+        return 'dat';
+    }
+
 }

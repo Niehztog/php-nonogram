@@ -2,14 +2,8 @@
 
 namespace Nonogram\LevelParser;
 
-class LevelParserYaml extends AbstractLevelParser implements LevelParserLabelInterface
+class LevelParserYaml extends AbstractLevelParser implements LevelParserInterface
 {
-
-    /**
-     * @var \Nonogram\Label\Factory
-     */
-    private $labelFactory;
-
     /**
      * @var \Symfony\Component\Yaml\Parser
      */
@@ -22,17 +16,8 @@ class LevelParserYaml extends AbstractLevelParser implements LevelParserLabelInt
      */
     public function __construct(\Nonogram\Label\Factory $labelFactory, \Symfony\Component\Yaml\Parser $yamlParser)
     {
-        $this->labelFactory = $labelFactory;
         $this->yamlParser = $yamlParser;
-    }
-
-    /**
-     * @param string $urn
-     * @return bool
-     */
-    public function canHandle($urn)
-    {
-        return 'yml' === $this->getExtension($urn);
+        parent::__construct($labelFactory);
     }
 
     /**
@@ -41,11 +26,20 @@ class LevelParserYaml extends AbstractLevelParser implements LevelParserLabelInt
     public function getLabels()
     {
         $array = $this->yamlParser->parse($this->rawData);
-        if(!isset($array['columns']) || !isset($array['rows'])) {
+        if (!isset($array['columns']) || !isset($array['rows'])) {
             throw new \RuntimeException('file in unexpected format');
         }
 
         return $this->labelFactory->getFromRaw($array);
     }
 
+    /**
+     * This method returns the supported file extension
+     * @return string
+     */
+    public function getFileExtension()
+    {
+        return 'yml';
+    }
+    
 }

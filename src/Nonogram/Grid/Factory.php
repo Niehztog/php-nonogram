@@ -2,28 +2,30 @@
 
 namespace Nonogram\Grid;
 
+use Nonogram\LevelParser\LevelParserMetaDataInterface;
+
 class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareInterface
 {
     use \Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
     /**
-     * @var \Nonogram\LevelParser\LevelParserFactory
+     * @var \Nonogram\LevelParser\Factory
      */
     private $parserFactory;
 
     /**
-     * @var \Nonogram\LevelDataSource\LevelDataSourceFactory
+     * @var \Nonogram\LevelDataSource\Factory
      */
     private $dataSourceFactory;
 
     /**
      * Factory constructor.
-     * @param \Nonogram\LevelParser\LevelParserFactory $parserFactory
-     * @param \Nonogram\LevelDataSource\LevelDataSourceFactory $dataSourceFactory
+     * @param \Nonogram\LevelParser\Factory $parserFactory
+     * @param \Nonogram\LevelDataSource\Factory $dataSourceFactory
      */
     public function __construct(
-        \Nonogram\LevelParser\LevelParserFactory $parserFactory,
-        \Nonogram\LevelDataSource\LevelDataSourceFactory $dataSourceFactory
+        \Nonogram\LevelParser\Factory $parserFactory,
+        \Nonogram\LevelDataSource\Factory $dataSourceFactory
     )
     {
         $this->parserFactory = $parserFactory;
@@ -43,15 +45,34 @@ class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareIn
         $dataSource = $this->dataSourceFactory->get($urn);
         $parser = $this->parserFactory->get($urn);
         $parser->setRawData($dataSource->getData());
-        $cells = $parser->getGrid();
-        $label = $parser->getLabels();
 
         $grid = $this->container->get('grid');
-        $grid->setCells($cells);
-        $grid->setLabels($label);
-        $grid->setSolvingStatistics($parser->getSolvingStatistics());
+        $grid->setCells($parser->getGrid());
+        $grid->setLabels($parser->getLabels());
+
+        if($parser instanceof \Nonogram\LevelParser\LevelParserMetaDataInterface) {
+            $grid->setId($parser->getId());
+            $grid->setTitle($parser->getTitle());
+            $grid->setAuthor($parser->getAuthor());
+            $grid->setCopyright($parser->getCopyright());
+            $grid->setDescription($parser->getDescription());
+            $grid->setCreated($parser->getCreated());
+        }
+        $title = $grid->getTitle();
+        if(empty($title)) {
+            $grid->setTitle(basename($urn));
+        }
 
         return $grid;
+    }
+
+    /**
+     * Returns list of all supported file extensions
+     * @return array
+     */
+    public function getFileExtensions()
+    {
+        return $this->parserFactory->getFileExtensions();
     }
 
 }

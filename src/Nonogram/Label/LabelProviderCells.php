@@ -68,6 +68,9 @@ class LabelProviderCells
         for ($$outerIndex=1;$$outerIndex<=$$outerLimit;$$outerIndex++) {
             $labelSequence = array(0);
             for ($$innerIndex=1;$$innerIndex<=$$innerLimit;$$innerIndex++) {
+                if(!isset($this->cells[$y-1][$x-1])) {
+                    throw new \RuntimeException('Undefined offset: '.$x.'/'.$y);
+                }
                 $cell = $this->cells[$y-1][$x-1];
                 end($labelSequence);
                 $key = key($labelSequence);

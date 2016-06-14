@@ -32,7 +32,7 @@ class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareIn
 
     /**
      * @param array $labelsRaw
-     * @return object
+     * @return \Nonogram\Label\Label
      */
     public function getFromRaw(array $labelsRaw)
     {

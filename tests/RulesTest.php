@@ -99,21 +99,7 @@ class RulesTest extends AbstractTest
     {
         $labels = new \Nonogram\Label\Label();
         $labels->setRow(array($labelArr));
-        $field = array(array());
-        for ($i = 0; $i < strlen($rowString); $i++) {
-            switch ($rowString{$i}) {
-                case 'U':
-                    $cell = $this->cellFactory->getUnknown();
-                    break;
-                case 'B':
-                    $cell = $this->cellFactory->getBox();
-                    break;
-                case 'E':
-                    $cell = $this->cellFactory->getEmpty();
-                    break;
-            }
-            $field[0][] = $cell;
-        }
+        $field = array(0 => $this->convertRowRawToActual($rowString));
 
         $labels->setCol(array_fill(0, count($field[0]), array()));
         $className = '\\Nonogram\\Solver\\Rule\\' . $className;

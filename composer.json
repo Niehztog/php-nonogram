@@ -13,27 +13,13 @@
             "Nonogram\\": "src/Nonogram/"
         }
     },
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "mikix/nonogram-db",
-                "version": "dev-master",
-                "source": {
-                    "url": "https://github.com/mikix/nonogram-db",
-                    "type": "git",
-                    "reference": "origin/master"
-                }
-            }
-        }
-    ],
     "require": {
         "symfony/yaml": "~3.0",
         "symfony/dependency-injection": "~3.0",
         "symfony/config": "~3.0",
         "symfony/finder": "~3.0",
         "hoa/console": "~2.0",
-        "mikix/nonogram-db": "dev-master"
+        "smalot/pdfparser": "~0.9"
     },
     "require-dev": {
         "phpunit/phpunit": "*"

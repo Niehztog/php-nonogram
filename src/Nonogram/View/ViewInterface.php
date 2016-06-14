@@ -9,11 +9,6 @@ namespace Nonogram\View;
 interface ViewInterface {
 
     /**
-     * @param $title
-     */
-    public function setTitle($title);
-
-    /**
      * @return string
      */
     public function drawField();
@@ -22,5 +17,10 @@ interface ViewInterface {
      * @param \Nonogram\Grid\Grid $grid
      */
     public function setGrid(\Nonogram\Grid\Grid $grid);
+
+    /**
+     * @return \Nonogram\Grid\Grid $grid
+     */
+    public function getGrid();
     
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!DOCTYPE pbn SYSTEM "http://webpbn.com/pbn-0.3.dtd">
+
+<puzzleset>
+
+<puzzle type="grid" defaultcolor="black">
+
+<source>webpbn.com</source>
+<id>#27961</id>
+<title>Symbol of Life</title>
+<author>Thomas Genuine</author>
+<authorid></authorid>
+<copyright>&copy; Copyright 2016 by Thomas Genuine</copyright>
+<description>
+
+</description>
+
+<color name="white" char=".">fff</color>
+<color name="black" char="X">000</color>
+
+<clues type="columns">
+<line></line>
+<line><count>2</count></line>
+<line><count>4</count></line>
+<line><count>1</count><count>2</count><count>1</count></line>
+<line><count>5</count></line>
+<line><count>4</count></line>
+<line></line>
+<line><count>3</count><count>9</count></line>
+<line><count>5</count><count>3</count><count>2</count></line>
+<line><count>1</count><count>1</count><count>11</count></line>
+<line><count>1</count><count>1</count></line>
+<line><count>1</count><count>1</count></line>
+<line><count>1</count><count>1</count></line>
+<line><count>1</count><count>1</count></line>
+<line><count>1</count><count>1</count></line>
+<line><count>1</count><count>1</count><count>8</count></line>
+<line><count>1</count><count>7</count><count>2</count></line>
+<line><count>13</count></line>
+<line><count>2</count></line>
+<line></line>
+</clues>
+
+<clues type="rows">
+<line></line>
+<line><count>2</count><count>2</count></line>
+<line><count>2</count><count>2</count></line>
+<line><count>5</count><count>12</count></line>
+<line><count>4</count><count>2</count><count>2</count></line>
+<line><count>2</count><count>10</count></line>
+<line><count>2</count><count>1</count><count>2</count></line>
+<line><count>2</count><count>1</count><count>2</count></line>
+<line><count>2</count><count>2</count></line>
+<line><count>2</count><count>2</count></line>
+<line><count>3</count><count>2</count></line>
+<line><count>1</count><count>1</count><count>3</count></line>
+<line><count>1</count><count>1</count><count>1</count><count>1</count></line>
+<line><count>1</count><count>1</count><count>1</count><count>1</count></line>
+<line><count>1</count><count>1</count><count>1</count><count>1</count></line>
+<line><count>3</count><count>3</count></line>
+<line><count>2</count><count>2</count></line>
+<line><count>1</count><count>1</count></line>
+<line><count>1</count><count>1</count></line>
+<line></line>
+</clues>
+
+<solution type="goal">
+<image>
+|....................|
+|..XX....XX..........|
+|.XX....XX...........|
+|.XXXXX.XXXXXXXXXXXX.|
+|..XXXX.XX........XX.|
+|....XX..XXXXXXXXXX..|
+|....XX...X......XX..|
+|...XX....X......XX..|
+|........XX......XX..|
+|........XX......XX..|
+|.......XXX......XX..|
+|.......X.X.....XXX..|
+|.......X.X.....X.X..|
+|.......X.X.....X.X..|
+|.......X.X.....X.X..|
+|.......XXX.....XXX..|
+|.......XX......XX...|
+|.......X.......X....|
+|.......X.......X....|
+|....................|
+</image>
+</solution>
+
+</puzzle>
+</puzzleset>

@@ -2,7 +2,7 @@
 
 namespace Nonogram\LevelDataSource;
 
-class LevelDataSourceFactory
+class Factory
 {
 
     /**

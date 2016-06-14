@@ -43,7 +43,7 @@ class ViewHtml extends AbstractView implements ViewInterface, ViewWritableInterf
      * @return string
      */
     public function drawField() {
-        $outStr = '<html><head><title>'.$this->title.'</title>' . PHP_EOL;
+        $outStr = '<html><head><title>'.$this->grid->getTitle().'</title>' . PHP_EOL;
         $outStr .= '<style>' . PHP_EOL;
         $outStr .= 'div {' . PHP_EOL;
         $outStr .= '    font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;' . PHP_EOL;

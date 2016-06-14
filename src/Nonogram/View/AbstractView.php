@@ -14,24 +14,19 @@ abstract class AbstractView implements ViewInterface
     protected $grid;
 
     /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @param $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
      * @param \Nonogram\Grid\Grid $grid
      */
     public function setGrid(\Nonogram\Grid\Grid $grid)
     {
         $this->grid = $grid;
+    }
+
+    /**
+     * @return \Nonogram\Grid\Grid $grid
+     */
+    public function getGrid()
+    {
+        return $this->grid;
     }
 
     /**

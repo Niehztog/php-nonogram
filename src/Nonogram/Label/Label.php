@@ -103,10 +103,8 @@ class Label
      */
     private function getLabels($horizontal, $index)
     {
-        if ($horizontal) {
-            return $this->row[$index-1];
-        }
-        return $this->col[$index-1];
+        $seq = $horizontal ? $this->getRow() : $this->getCol();
+        return $seq[$index-1];
     }
 
     /**

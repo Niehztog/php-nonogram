@@ -2,8 +2,6 @@
 
 namespace Nonogram\Grid;
 
-use Nonogram\LevelParser\LevelParserMetaDataInterface;
-
 class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareInterface
 {
     use \Symfony\Component\DependencyInjection\ContainerAwareTrait;

@@ -43,7 +43,7 @@ class ControllerConvert extends AbstractSubController implements AnyController
     {
         $filenameSave = basename($urn);
         if($filenameSave) {
-            $filenameSave = substr_replace($filenameSave, $this->view->getFileExtension(), strrpos($urn, '.') + 1);
+            $filenameSave = substr_replace($filenameSave, $this->view->getFileExtension(), strrpos($filenameSave, '.') + 1);
         }
         else {
             $id = $this->view->getGrid()->getId();

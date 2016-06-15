@@ -36,7 +36,7 @@ class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareIn
      */
     public function getFromRaw(array $labelsRaw)
     {
-        if(empty($labelsRaw)) {
+        if (empty($labelsRaw) || !isset($labelsRaw['columns']) || !isset($labelsRaw['rows'])) {
             throw new \InvalidArgumentException('empty label array');
         }
 

@@ -32,11 +32,13 @@ class ViewXml extends AbstractView implements ViewInterface, ViewWritableInterfa
             '<title>'.$this->grid->getTitle().'</title>' . PHP_EOL .
             '<author>'.$this->grid->getAuthor().'</author>' . PHP_EOL .
             '<authorid></authorid>' . PHP_EOL .
-            '<copyright>'.str_replace('(c) ', '&copy; ', $this->grid->getCopyright()).'</copyright>' . PHP_EOL .
-            '<description>' . PHP_EOL .
-            $this->grid->getDescription() . PHP_EOL .
-            '</description>' . PHP_EOL .
-            PHP_EOL .
+            '<copyright>'.str_replace('(c) ', '&copy; ', $this->grid->getCopyright()).'</copyright>' . PHP_EOL;
+        if($this->grid->getDescription()) {
+            $outStr .= '<description>' . PHP_EOL .
+                $this->grid->getDescription() . PHP_EOL .
+                '</description>' . PHP_EOL;
+        }
+        $outStr .= PHP_EOL .
             '<color name="white" char=".">fff</color>' . PHP_EOL .
             '<color name="black" char="X">000</color>' . PHP_EOL .
             PHP_EOL .

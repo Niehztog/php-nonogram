@@ -79,6 +79,6 @@ class CellWrapper implements AnyCell
      */
     public function isSolved()
     {
-        return $this->cellInstance->isSolved();
+        return null !== $this->cellInstance && $this->cellInstance->isSolved();
     }
 }

@@ -61,7 +61,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
 
         $pdfObjects = $pdf->getObjects();
         $lastX = 0;
-        $array = array();
+        $array = array('columns' => array(), 'rows' => array());
         $direction = 'columns';
         $previousCoordX = 0;
         $previousCoordY = 0;
@@ -73,7 +73,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
                 continue;
             }
 
-            //detect lines
+            //detect outer borders
             if (1 === preg_match('~1\.5 w 0 0 0 RG ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) m ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) l S~', $content, $matches)) {
                 $lineX1 = $matches[1];
                 //$lineY1 = $matches[2];
@@ -150,6 +150,10 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
             }
         }
 
+        if(!isset($leftmostX)) {
+            throw new \RuntimeException('pdf could not properly be parsed');
+        }
+
         //find gaps
         $previousCoordX = 0;
         foreach ($array['columns'] as $key => $val) {
@@ -170,25 +174,36 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
             $previousCoordY = $key;
         }
 
-        $columnKeys = array_keys($array['columns']);
-        $columnsLeftmostX = min($columnKeys);
-        $columnsRightmostX = max($columnKeys);
-        for ($i=1;$i<=($columnsLeftmostX-$leftmostX)/$smallestDistanceX;$i++) {
-            array_unshift($array['columns'], array());
+        if(empty($array['columns'])) {
+            $array['columns'] = array();
         }
-        for ($i=1;$i<=($rightmostX - $columnsRightmostX)/$smallestDistanceX;$i++) {
-            array_push($array['columns'], array());
+        else {
+            $columnKeys = array_keys($array['columns']);
+            $columnsLeftmostX = min($columnKeys);
+            $columnsRightmostX = max($columnKeys);
+            for ($i = 1; $i <= ($columnsLeftmostX - $leftmostX) / $smallestDistanceX; $i++) {
+                array_unshift($array['columns'], array());
+            }
+            for ($i = 1; $i <= ($rightmostX - $columnsRightmostX) / $smallestDistanceX; $i++) {
+                array_push($array['columns'], array());
+            }
         }
-        $rowKeys = array_keys($array['rows']);
-        $rowsLowestY = min($rowKeys);
-        $rowsHighestY = max($rowKeys);
-        for ($i=1;$i<=($highestY - $rowsHighestY)/$smallestDistanceY;$i++) {
-            array_unshift($array['rows'], array());
+
+        if(empty($array['rows'])) {
+            $array['rows'] = array();
         }
-        for ($i=1;$i<=($rowsLowestY-$lowestY)/$smallestDistanceY;$i++) {
-            array_push($array['rows'], array());
+        else {
+            $rowKeys = array_keys($array['rows']);
+            $rowsLowestY = min($rowKeys);
+            $rowsHighestY = max($rowKeys);
+            for ($i = 1; $i <= ($highestY - $rowsHighestY) / $smallestDistanceY; $i++) {
+                array_unshift($array['rows'], array());
+            }
+            for ($i = 1; $i <= ($rowsLowestY - $lowestY) / $smallestDistanceY; $i++) {
+                array_push($array['rows'], array());
+            }
         }
-        
+
         //erase coordinates in array keys
         $array['columns'] = array_values($array['columns']);
         $array['rows'] = array_values($array['rows']);

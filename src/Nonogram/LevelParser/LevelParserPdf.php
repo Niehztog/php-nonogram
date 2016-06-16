@@ -157,8 +157,8 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
         //find gaps
         $previousCoordX = 0;
         foreach ($array['columns'] as $key => $val) {
-            if ($previousCoordX > 0 && floor($key) - floor($previousCoordX + $smallestDistanceX) > 1) {
-                for ($i=$previousCoordX + $smallestDistanceX;floor($i)<floor($key);$i=$i+$smallestDistanceX) {
+            if ($previousCoordX > 0 && $key - $previousCoordX - $smallestDistanceX > 1) {
+                for ($i=$previousCoordX + $smallestDistanceX;$key-$i>1;$i=$i+$smallestDistanceX) {
                     $this->array_insert_before($array['columns'], $key, array((string)$i => array()));
                 }
             }
@@ -166,8 +166,8 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
         }
         $previousCoordY = 0;
         foreach ($array['rows'] as $key => $val) {
-            if ($previousCoordY > 0 && floor($previousCoordY - $smallestDistanceY) - floor($key) > 1) {
-                for ($i=$previousCoordY - $smallestDistanceY;floor($i)>floor($key);$i=$i-$smallestDistanceY) {
+            if ($previousCoordY > 0 && $previousCoordY - $smallestDistanceY - $key > 1) {
+                for ($i=$previousCoordY - $smallestDistanceY;$i-$key>1;$i=$i-$smallestDistanceY) {
                     $this->array_insert_before($array['rows'], $key, array((string)$i => array()));
                 }
             }
@@ -273,7 +273,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
         $keys = array_keys($array);
         $index = array_search($key, $keys);
         $pos = false === $index ? count($array) : $index;
-        $array = array_merge(array_slice($array, 0, $pos), $new, array_slice($array, $pos));
+        $array = array_slice($array, 0, $pos, true) + $new + array_slice($array, $pos, null, true);
     }
 
     /**

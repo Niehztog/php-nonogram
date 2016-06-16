@@ -82,6 +82,9 @@ class MyRule_6 extends AbstractRuleJ54
         // 2) the numbers of segments with same length equals the number of black runs with the corresponding length  --> update ranges to fit segments exactly
         $alreadyProcessed = array();
         foreach($delimitedSegments as $segment) {
+            if(!isset($runLengths[$segment['length']])) {
+                throw new \RuntimeException('found a black segment which is not covered by a black run');
+            }
             if($runLengths[$segment['length']] === $segmentLengths[$segment['length']]) {
                 //find index of first black run with the length of the segment
                 foreach($blackRuns as $j => $run) {

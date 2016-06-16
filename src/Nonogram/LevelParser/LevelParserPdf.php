@@ -34,6 +34,8 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
      */
     private $created;
 
+    const SMALLEST_DISTANCE_DEFAULT = 1024;
+    
     /**
      * @param $rawData
      */
@@ -65,8 +67,8 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
         $direction = 'columns';
         $previousCoordX = 0;
         $previousCoordY = 0;
-        $smallestDistanceX = 1024;
-        $smallestDistanceY = 1024;
+        $smallestDistanceX = self::SMALLEST_DISTANCE_DEFAULT;
+        $smallestDistanceY = self::SMALLEST_DISTANCE_DEFAULT;
         foreach ($pdfObjects as $key => $object) {
             $content = $object->getContent();
             if ('' === $content) {
@@ -95,8 +97,9 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
                 continue;
             }
 
-            preg_match('~Tf (?:([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) rg )?[0-9]+ [0-9]+ [0-9]+ [0-9]+ ([0-9]+\.?[0-9]+) ([0-9]+\.?[0-9]+) Tm.+\((.+)\)~', $content, $matches);
-            if (!isset($matches[6])) {
+            $textMatch = preg_match('~Tf (?:([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) rg )?[0-9]+ [0-9]+ [0-9]+ [0-9]+ ([0-9]+\.?[0-9]+) ([0-9]+\.?[0-9]+) Tm.+\((.+)\)~', $content, $matches);
+            $hiddenClueMatch = !$textMatch ? preg_match('~([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) rg ([0-9]+\.?[0-9]*) ([0-9]+\.?[0-9]*) (\-?[0-9]+\.?[0-9]*) (\-?[0-9]+\.?[0-9]*) re f~', $content, $matches) : 0;
+            if (!$textMatch && !$hiddenClueMatch) {
                 continue;
             }
 
@@ -104,11 +107,15 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
                 throw new \RuntimeException('puzzle relies on colors - not supported');
             }
 
+            if($hiddenClueMatch) {
+                throw new \RuntimeException('puzzles includes hidden clues - not supported');
+            }
+
             $coordsX = $matches[4];
             $coordsY = $matches[5];
             $text = $matches[6];
 
-            if (!is_numeric($text)) {
+            if (!is_numeric($text) || in_array($coordsY, array('751', '732.80', '717.20', '701.60'))) {
                 if ('751' === $coordsY && 0 === strpos($text, 'Web Paint-by-Number Puzzle #')) {
                     $this->id = (int) substr($text, 28);
                 } elseif ('732.80' === $coordsY) {
@@ -284,4 +291,5 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
     {
         return 'pdf';
     }
+
 }

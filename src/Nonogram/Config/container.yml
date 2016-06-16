@@ -22,7 +22,8 @@ parameters:
     #application.level_filename: 'http://webpbn.com/t/webpbn-27961-1.pdf'
     #application.level_filename: 'http://webpbn.com/t/webpbn-27944-1.pdf'
     #application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-10269-1.pdf'
-    application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-10320-1.pdf'
+    #application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-19418-1.pdf'
+    application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-26255-1.pdf'
     #application.level_filename: 'C:\Users\Nils\Downloads\webpbn'
     application.level_filename:
         - '%application.level_directory%/mariopicross/easy-level2-a.yml'

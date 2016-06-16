@@ -21,7 +21,8 @@ parameters:
     #application.level_filename: 'http://webpbn.com/t/webpbn-3875-1.pdf'
     #application.level_filename: 'http://webpbn.com/t/webpbn-27961-1.pdf'
     #application.level_filename: 'http://webpbn.com/t/webpbn-27944-1.pdf'
-    #application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-10000-1.pdf'
+    #application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-10269-1.pdf'
+    application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-10320-1.pdf'
     #application.level_filename: 'C:\Users\Nils\Downloads\webpbn'
     application.level_filename:
         - '%application.level_directory%/mariopicross/easy-level2-a.yml'
@@ -146,7 +147,7 @@ services:
     level_parser_pdf:
         public: false
         class: Nonogram\LevelParser\LevelParserPdf
-        arguments: ['@label_factory']
+        arguments: ['@label_factory', '@color_factory']
 
 
     cell_factory:
@@ -196,6 +197,11 @@ services:
         shared: false
         public: true
         class: Nonogram\Label\Label
+
+    label_colored:
+        shared: false
+        public: true
+        class: Nonogram\Label\LabelColored
 
     label_generator:
         public: false
@@ -320,6 +326,43 @@ services:
         calls:
             - [setContainer, ['@service_container']]
 
+
+    color_factory:
+        public: true
+        class: Nonogram\Label\Color\Factory
+        calls:
+            - [addColor, ['@color_black']]
+            - [addColor, ['@color_red']]
+            - [addColor, ['@color_green']]
+            - [addColor, ['@color_blue']]
+
+    color_black:
+        public: false
+        class: Nonogram\Label\Color\Color
+        calls:
+            - [setName, ['black']]
+            - [setHex, ['000000']]
+
+    color_red:
+        public: false
+        class: Nonogram\Label\Color\Color
+        calls:
+            - [setName, ['red']]
+            - [setHex, ['ff0000']]
+
+    color_green:
+        public: false
+        class: Nonogram\Label\Color\Color
+        calls:
+            - [setName, ['green']]
+            - [setHex, ['00aa00']]
+
+    color_blue:
+        public: false
+        class: Nonogram\Label\Color\Color
+        calls:
+            - [setName, ['blue']]
+            - [setHex, ['0000ff']]
 
     yaml_dumper:
         public: false

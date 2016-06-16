@@ -40,8 +40,18 @@ class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareIn
             throw new \InvalidArgumentException('empty label array');
         }
 
+        $colored = false;
+        foreach(array('columns', 'rows') as $direction) {
+            foreach ($labelsRaw[$direction] as $sequence) {
+                foreach($sequence as $count) {
+                    $colored = $count instanceof Count;
+                    break 3;
+                }
+            }
+        }
+
         /** @var \Nonogram\Label\Label $label */
-        $label = $this->container->get('label');
+        $label = $this->container->get($colored ? 'label_colored' : 'label');
 
         $label->setCol($labelsRaw['columns']);
         $label->setRow($labelsRaw['rows']);

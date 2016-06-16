@@ -137,6 +137,9 @@ class SolverJ54 implements AnySolver
     {
         $timeStart = microtime(true);
         $this->init($labels, $fieldOverride, $runRangeOverride);
+        if($labels instanceof \Nonogram\Label\LabelColored && $labels->getColorCount() > 1) {
+            return $this->field;
+        }
         if($labels->hasHiddenCounts()) {
             return $this->field;
         }

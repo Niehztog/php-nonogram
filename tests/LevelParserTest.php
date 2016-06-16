@@ -121,6 +121,9 @@ EOD;
         if(\Nonogram\LevelParser\LevelParserYaml::class === $className) {
             $parser = new $className($this->labelFactory, new \Symfony\Component\Yaml\Parser());
         }
+        elseif('\Nonogram\LevelParser\LevelParserPdf' === $className) {
+            $parser = new $className($this->labelFactory, $this->container->get('color_factory'));
+        }
         else {
             $parser = new $className($this->labelFactory, $this->cellFactory);
         }

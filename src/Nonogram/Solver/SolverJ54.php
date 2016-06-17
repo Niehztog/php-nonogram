@@ -159,6 +159,9 @@ class SolverJ54 implements AnySolver
     {
         $timeStart = microtime(true);
         $this->init($labels, $fieldOverride, $runRangeOverride);
+        if($labels->hasHiddenCounts()) {
+            return $this->field;
+        }
         $iterations = 0;
 
         do {

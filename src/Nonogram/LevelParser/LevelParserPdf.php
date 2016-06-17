@@ -107,13 +107,23 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
                 throw new \RuntimeException('puzzle relies on colors - not supported');
             }
 
-            if($hiddenClueMatch) {
+            /*if($hiddenClueMatch) {
                 throw new \RuntimeException('puzzles includes hidden clues - not supported');
-            }
+            }*/
 
-            $coordsX = $matches[4];
-            $coordsY = $matches[5];
-            $text = $matches[6];
+            if($hiddenClueMatch) {
+                //lower-left  corner  (x,y)  and  dimensions width and height in user space. The operation x y width height re
+                $hiddenClueWidth = $matches[6];
+                $hiddenClueHeight = $matches[7];
+                $coordsX = sprintf("%01.2f", $matches[4] + $hiddenClueWidth / 2);
+                $coordsY = sprintf("%01.2f", $matches[5] + $hiddenClueHeight -1);
+                $text = '0';
+            }
+            else {
+                $coordsX = $matches[4];
+                $coordsY = $matches[5];
+                $text = $matches[6];
+            }
 
             if (!is_numeric($text) || in_array($coordsY, array('751', '732.80', '717.20', '701.60'))) {
                 if ('751' === $coordsY && 0 === strpos($text, 'Web Paint-by-Number Puzzle #')) {

@@ -428,7 +428,7 @@ class ViewText extends AbstractView implements ViewInterface
                 $labelsColReverse = array_reverse($labelsCol);
 
                 if (isset($labelsColReverse[$line])) {
-                    $out .= ' ' . str_pad($labelsColReverse[$line], self::CELL_WIDTH, ' ', STR_PAD_LEFT);
+                    $out .= ' ' . str_pad('0' === $labelsColReverse[$line] ? 'X' : $labelsColReverse[$line], self::CELL_WIDTH, ' ', STR_PAD_LEFT);
                 } else {
                     $out .= ' ' . str_repeat(' ', self::CELL_WIDTH);
                 }
@@ -452,7 +452,7 @@ class ViewText extends AbstractView implements ViewInterface
         $out = '';
         for ($column = 0; $column < $maxNumbersRow; $column++) {
             if (isset($labelsRow[$column])) {
-                $out .= str_pad($labelsRow[$column], $maxLength, ' ', STR_PAD_LEFT) . ' ';
+                $out .= str_pad('0' === $labelsRow[$column] ? 'X' : $labelsRow[$column], $maxLength, ' ', STR_PAD_LEFT) . ' ';
             } else {
                 $out = str_repeat(' ', $maxLength+1) . $out;
             }

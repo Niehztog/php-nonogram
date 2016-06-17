@@ -140,7 +140,8 @@ class Label
         }
 
         $totalMax = 0;
-        foreach ($this->row as $labelsRow) {
+        $rowLabels = $this->getRow();
+        foreach ($rowLabels as $labelsRow) {
             if(empty($labelsRow)) {
                 continue;
             }
@@ -152,6 +153,27 @@ class Label
         }
 
         return $this->cacheMaxDigitCount = $totalMax;
+    }
+
+    /**
+     * Tells whether any of the numbers in the labels euqals to 0,
+     * which means that the actual run-length is kept secret
+     *
+     * @return bool
+     */
+    public function hasHiddenCounts()
+    {
+        foreach(array('getCol', 'getRow') as $getter) {
+            $data = $this->$getter();
+            foreach ($data as $i => $seq) {
+                foreach ($seq as $j => $count) {
+                    if($count === '0') {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**

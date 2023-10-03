@@ -34,7 +34,7 @@ class ViewHtml extends AbstractView implements ViewInterface, ViewWritableInterf
     public function setGrid(\Nonogram\Grid\Grid $grid)
     {
         if(!$this->supportsMultiple()) {
-            $this->grid = array();
+            $this->grid = [];
         }
         $this->grid[] = $grid;
     }

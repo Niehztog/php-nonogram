@@ -15,7 +15,7 @@ class LevelParserDat extends AbstractLevelParserGrid implements LevelParserInter
      */
     public function getGrid()
     {
-        $field = array();
+        $field = [];
         $raw = trim($this->rawData, " \r\n");
         $split = preg_split("/(\r\n|\n|\r)/", $raw);
         foreach ($split as $indexY => $row) {

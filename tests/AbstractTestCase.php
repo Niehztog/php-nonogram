@@ -1,27 +1,24 @@
 <?php
 
-use Nonogram\Cell\AnyCell;
+namespace NonogramTests;
 
-abstract class AbstractTest extends \PHPUnit_Framework_TestCase
+use Nonogram\Cell\AnyCell;
+use PHPUnit\Framework\TestCase;
+
+abstract class AbstractTestCase extends TestCase
 {
 
-    protected $container;
+    protected \Symfony\Component\DependencyInjection\ContainerBuilder $container;
 
-    /**
-     * @var \Nonogram\Solver\RunRange\RunRangeFactory
-     */
-    protected $runRangeFactory;
+    protected \Nonogram\Solver\RunRange\RunRangeFactory $runRangeFactory;
 
-    /**
-     * @var \Nonogram\Cell\Factory
-     */
-    protected $cellFactory;
+    protected \Nonogram\Cell\Factory $cellFactory;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initContainer();
         $this->cellFactory = new \Nonogram\Cell\Factory();
@@ -34,7 +31,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
     }
 
@@ -51,9 +48,9 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
     protected function convertRowRawToActual($rowString)
     {
-        $field = array();
+        $field = [];
         for ($i = 0; $i < strlen($rowString); $i++) {
-            switch ($rowString{$i}) {
+            switch ($rowString[$i]) {
                 case 'U':
                     $cell = $this->cellFactory->getUnknown();
                     break;

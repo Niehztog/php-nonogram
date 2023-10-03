@@ -15,62 +15,40 @@ use Nonogram\Solver\RunRange\RunRange;
  */
 class SolverJ54 implements AnySolver
 {
-    /**
-     * @var \Nonogram\Label\Label
-     */
-    private $labels;
 
-    /**
-     * @var array
-     */
-    private $field;
+    private \Nonogram\Label\Label $labels;
+
+    private array $field;
 
     /**
      * @var \Nonogram\Solver\Rule\AbstractRuleJ54[]
      */
-    private $rules = array();
+    private array $rules = [];
 
-    /**
-     * @var \Nonogram\Solver\RunRange\RunRange
-     */
-    private $runRanges;
+    private \Nonogram\Solver\RunRange\RunRange $runRanges;
 
     /**
      * counts how many updates come from each rule
-     * @var array
      */
-    private $solvingStatistics = array();
+    private array $solvingStatistics = [];
 
     /**
      * Time in microseconds it took to solve the puzzle
-     * @var int
      */
-    private $lastSolvingTime = 0;
+    private float $lastSolvingTime = 0;
 
-    /**
-     * @var \Nonogram\Cell\Factory
-     */
-    private $cellFactory;
+    private \Nonogram\Cell\Factory $cellFactory;
 
-    /**
-     * @var \Nonogram\Solver\RunRange\RunRangeFactory
-     */
-    private $runRangeFactory;
+    private \Nonogram\Solver\RunRange\RunRangeFactory $runRangeFactory;
 
-    /**
-     * @var array
-     */
-    private $finishedRows = array();
+    private array $finishedRows = [];
 
-    /**
-     * @var array
-     */
-    private $finishedCols = array();
+    private array $finishedCols = [];
 
     /**
      * SolverJ54 constructor.
      * @param \Nonogram\Cell\Factory $cellFactory
-     * @param RunRange\RunRangeFactory $runRangeFactory
+     * @param \Nonogram\Solver\RunRange\RunRangeFactory $runRangeFactory
      */
     public function __construct(
         \Nonogram\Cell\Factory $cellFactory,
@@ -85,17 +63,17 @@ class SolverJ54 implements AnySolver
      * Init method
      * @param Label $labels
      * @param array $fieldOverride option to inject a pre-defined state, only useful for unittests
-     * @param RunRange\RunRange|null $runRangeOverride option to inject a pre-defined state, only useful for unittests
+     * @param \Nonogram\Solver\RunRange\RunRange|null $runRangeOverride option to inject a pre-defined state, only useful for unittests
      */
     private function init(
         \Nonogram\Label\Label $labels,
-        array $fieldOverride = array(),
+        array $fieldOverride = [],
         RunRange $runRangeOverride = null
     )
     {
-        $this->finishedRows = array();
-        $this->finishedCols = array();
-        $this->solvingStatistics = array();
+        $this->finishedRows = [];
+        $this->finishedCols = [];
+        $this->solvingStatistics = [];
         $this->labels = $labels;
         $this->initField($fieldOverride);
         $this->initRunRanges($runRangeOverride);
@@ -113,7 +91,7 @@ class SolverJ54 implements AnySolver
      * Inits the field with all cells set to "unknown"
      * @param array $fieldOverride option to inject a pre-defined state, only useful for unittests
      */
-    private function initField(array $fieldOverride = array())
+    private function initField(array $fieldOverride = [])
     {
         if(!empty($fieldOverride)) {
             $this->field = $fieldOverride;
@@ -123,7 +101,7 @@ class SolverJ54 implements AnySolver
         $sizeX = $this->labels->getSizeX();
         $sizeY = $this->labels->getSizeY();
 
-        $this->field = array();
+        $this->field = [];
 
         for ($indexX = 0;$indexX < $sizeX; $indexX++) {
             for ($indexY = 0;$indexY < $sizeY; $indexY++) {
@@ -133,7 +111,7 @@ class SolverJ54 implements AnySolver
     }
 
     /**
-     * @param RunRange\RunRange|null $runRangeOverride option to inject a pre-defined state, only useful for unittests
+     * @param \Nonogram\Solver\RunRange\RunRange|null $runRangeOverride option to inject a pre-defined state, only useful for unittests
      */
     private function initRunRanges(RunRange $runRangeOverride = null)
     {
@@ -148,12 +126,12 @@ class SolverJ54 implements AnySolver
     /**
      * @param Label $labels
      * @param array $fieldOverride option to inject a pre-defined state, only useful for unittests
-     * @param RunRange\RunRange|null $runRangeOverride  option to inject a pre-defined state, only useful for unittests
+     * @param \Nonogram\Solver\RunRange\RunRange|null $runRangeOverride  option to inject a pre-defined state, only useful for unittests
      * @return array
      */
     public function solve(
         \Nonogram\Label\Label $labels,
-        array $fieldOverride = array(),
+        array $fieldOverride = [],
         RunRange $runRangeOverride = null
     )
     {
@@ -192,7 +170,7 @@ class SolverJ54 implements AnySolver
                     continue;
                 }
                 //compose a new sequence of the column
-                $sequence = array();
+                $sequence = [];
                 for ($rowNum = 0; $rowNum < $this->labels->getSizeY(); $rowNum++) {
                     $sequence[$rowNum] = &$this->field[$rowNum][$colNum];
                 }
@@ -228,10 +206,8 @@ class SolverJ54 implements AnySolver
 
     /**
      * Getter for property "ruleActionCounter"
-     *
-     * @return array
      */
-    public function getSolvingStatistics()
+    public function getSolvingStatistics(): array
     {
         return $this->solvingStatistics;
     }

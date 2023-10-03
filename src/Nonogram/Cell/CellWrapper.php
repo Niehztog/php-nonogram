@@ -55,7 +55,7 @@ class CellWrapper implements AnyCell
      * Transaction may fail with an Exception in case type is "empty"
      *
      * @return mixed
-     * @throws Exception
+     * @throws \Exception
      */
     public function fill()
     {

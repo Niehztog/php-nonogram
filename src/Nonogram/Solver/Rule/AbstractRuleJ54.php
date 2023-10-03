@@ -66,7 +66,7 @@ abstract class AbstractRuleJ54
             throw new \InvalidArgumentException(sprintf('invalid arguments for cellIndexStart/End (%d,%d)', $cellIndexStart, $cellIndexEnd));
         }
 
-        $intersectingBlackRuns = array();
+        $intersectingBlackRuns = [];
 
         foreach ($r as $j => $range) {
             if ($range['s'] <= $cellIndexStart && $cellIndexEnd <= $range['e'] && (null === $lengthFilter || $lengthFilter === $range['e'] - $range['s'] + 1)) {
@@ -148,7 +148,7 @@ abstract class AbstractRuleJ54
     {
         $allowedCellTypes = (array)$allowedCellTypes;
 
-        $segments = array();
+        $segments = [];
         if(0 === $maxLength) {
             return $segments;
         }

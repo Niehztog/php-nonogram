@@ -19,7 +19,7 @@ class Grid
      *
      * @var array
      */
-    private $cells = array();
+    private $cells = [];
 
     /**
      * @var \Nonogram\Label\Label

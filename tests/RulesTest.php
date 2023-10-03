@@ -1,8 +1,10 @@
 <?php
 
+namespace NonogramTests;
+
 use Nonogram\Cell\AnyCell;
 
-class RulesTest extends AbstractTest
+class RulesTest extends AbstractTestCase
 {
 
     /**
@@ -31,7 +33,7 @@ class RulesTest extends AbstractTest
     /**
      * @return array
      */
-    public function ruleDeterminationDataProvider()
+    public static function ruleDeterminationDataProvider()
     {
         return array(
             array('RuleJ54_1_3', array(2,1,1,3), 'UUUUUUUBUBUU', array(array('val'=>AnyCell::TYPE_EMPTY, 'pos'=>6))),
@@ -73,7 +75,7 @@ class RulesTest extends AbstractTest
     /**
      * @return array
      */
-    public function ruleRefinementDataProvider()
+    public static function ruleRefinementDataProvider()
     {
         return array(
             array('RuleJ54_2_1', array(3,3), 'UUUUUUUUUU', array(1=>array('s'=>0,'e'=>5),2=>array('s'=>0,'e'=>9)), array(1=>array('s'=>0,'e'=>5),2=>array('s'=>4,'e'=>9))),
@@ -101,7 +103,7 @@ class RulesTest extends AbstractTest
         $labels->setRow(array($labelArr));
         $field = array(0 => $this->convertRowRawToActual($rowString));
 
-        $labels->setCol(array_fill(0, count($field[0]), array()));
+        $labels->setCol(array_fill(0, count($field[0]), []));
         $className = '\\Nonogram\\Solver\\Rule\\' . $className;
         $rule = new $className($this->cellFactory);
         $solver = new \Nonogram\Solver\SolverJ54($this->cellFactory, $this->runRangeFactory);

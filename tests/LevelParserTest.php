@@ -1,25 +1,24 @@
 <?php
 
-class LevelParserTest extends AbstractTest
+namespace NonogramTests;
+
+class LevelParserTest extends AbstractTestCase
 {
 
-    /**
-     * @var \Nonogram\Cell\Factory
-     */
-    private $labelFactory;
+    private \Nonogram\Label\Factory $labelFactory;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->labelFactory = new \Nonogram\Label\Factory(new \Nonogram\Label\LabelProviderCells());
         $this->labelFactory->setContainer($this->container);
     }
 
-    public function testDataProvider() {
+    public static function parserDataProvider() {
         $rawDataDat = <<<'EOD'
 11000
 11000
@@ -101,25 +100,25 @@ rows:
     - [5]
 EOD;
 
-
-        return array(
-            array('\Nonogram\LevelParser\LevelParserDat', $rawDataDat, array('BBEEE', 'BBEEE', 'BBEEE', 'BBEEE', 'BBBBB')),
-            array('\Nonogram\LevelParser\LevelParserLua', $rawDataLua, array('BBEEE', 'BBEEE', 'BBEEE', 'BBEEE', 'BBBBB')),
-            array('\Nonogram\LevelParser\LevelParserPdf', $rawDataPdf, array('col'=>array(0=>array(0=>'2',1=>'1'),1=>array(0=>'2',1=>'1',2=>'3'),2=>array(0=>'7'),3=>array(0=>'1',1=>'3'),4=>array(0=>'2',1=>'1')),'row'=>array(0=>array(0=>'2'),1=>array(0=>'2',1=>'1'),2=>array(0=>'1',1=>'1'),3=>array(0=>'3'),4=>array(0=>'1',1=>'1'),5=>array(0=>'1',1=>'1'),6=>array(0=>'2'),7=>array(0=>'1',1=>'1'),8=>array(0=>'1',1=>'2'),9=>array(0=>'2'))), array('getId' => 1,'getTitle' => 'Demo Puzzle from Front Page','getAuthor' => 'Jan Wolter','getCopyright' => '(c) Copyright 2004 by Jan Wolter','getDescription' => '','getCreated' => 'Mar 24, 2004')),
-            array('\Nonogram\LevelParser\LevelParserXml', $rawDataXml, array('col'=>array(0=>array(0=>'2',1=>'1'),1=>array(0=>'2',1=>'1',2=>'3'),2=>array(0=>'7'),3=>array(0=>'1',1=>'3'),4=>array(0=>'2',1=>'1')),'row'=>array(0=>array(0=>'2'),1=>array(0=>'2',1=>'1'),2=>array(0=>'1',1=>'1'),3=>array(0=>'3'),4=>array(0=>'1',1=>'1'),5=>array(0=>'1',1=>'1'),6=>array(0=>'2'),7=>array(0=>'1',1=>'1'),8=>array(0=>'1',1=>'2'),9=>array(0=>'2'))), array('getId' => 1,'getTitle' => 'Demo Puzzle from Front Page','getAuthor' => 'Jan Wolter','getCopyright' => '(c) Copyright 2004 by Jan Wolter','getDescription' => 'A stick figure man, dancing his stickly little heart out.','getCreated' => '')),
-            array('\Nonogram\LevelParser\LevelParserYaml', $rawDataYaml, array('col'=>array(0=>array(0=>5),1=>array(0=>5),2=>array(0=>1),3=>array(0=>1),4=>array(0=>1)),'row'=>array(0=>array(0=>2),1=>array(0=>2),2=>array(0=>2),3=>array(0=>2),4=>array(0=>5)))),
-        );
+        return [
+            [\Nonogram\LevelParser\LevelParserDat::class, $rawDataDat, ['BBEEE', 'BBEEE', 'BBEEE', 'BBEEE', 'BBBBB']],
+            [\Nonogram\LevelParser\LevelParserLua::class, $rawDataLua, ['BBEEE', 'BBEEE', 'BBEEE', 'BBEEE', 'BBBBB']],
+            [\Nonogram\LevelParser\LevelParserPdf::class, $rawDataPdf, ['col'=>[0=>[0=>'2',1=>'1'],1=>[0=>'2',1=>'1',2=>'3'],2=>[0=>'7'],3=>[0=>'1',1=>'3'],4=>[0=>'2',1=>'1']],'row'=>[0=>[0=>'2'],1=>[0=>'2',1=>'1'],2=>[0=>'1',1=>'1'],3=>[0=>'3'],4=>[0=>'1',1=>'1'],5=>[0=>'1',1=>'1'],6=>[0=>'2'],7=>[0=>'1',1=>'1'],8=>[0=>'1',1=>'2'],9=>[0=>'2']]], ['getId' => 1,'getTitle' => 'Demo Puzzle from Front Page','getAuthor' => 'Jan Wolter','getCopyright' => '(c) Copyright 2004 by Jan Wolter','getDescription' => '','getCreated' => 'Mar 24, 2004']],
+            [\Nonogram\LevelParser\LevelParserXml::class, $rawDataXml, ['col'=>[0=>[0=>'2',1=>'1'],1=>[0=>'2',1=>'1',2=>'3'],2=>[0=>'7'],3=>[0=>'1',1=>'3'],4=>[0=>'2',1=>'1']],'row'=>[0=>[0=>'2'],1=>[0=>'2',1=>'1'],2=>[0=>'1',1=>'1'],3=>[0=>'3'],4=>[0=>'1',1=>'1'],5=>[0=>'1',1=>'1'],6=>[0=>'2'],7=>[0=>'1',1=>'1'],8=>[0=>'1',1=>'2'],9=>[0=>'2']]], ['getId' => 1,'getTitle' => 'Demo Puzzle from Front Page','getAuthor' => 'Jan Wolter','getCopyright' => '(c) Copyright 2004 by Jan Wolter','getDescription' => 'A stick figure man, dancing his stickly little heart out.','getCreated' => '']],
+            [\Nonogram\LevelParser\LevelParserYaml::class, $rawDataYaml, ['col'=>[0=>[0=>5],1=>[0=>5],2=>[0=>1],3=>[0=>1],4=>[0=>1]],'row'=>[0=>[0=>2],1=>[0=>2],2=>[0=>2],3=>[0=>2],4=>[0=>5]]]],
+        ];
 
     }
 
     /**
      * @test
      *
-     * @dataProvider testDataProvider
+     * @dataProvider parserDataProvider
      */
-    public function testParser($className, $rawData, $expectedRaw, $expectedMetaData = array())
+    public function testParser($className, $rawData, $expectedRaw, $expectedMetaData = [])
     {
-        if('\Nonogram\LevelParser\LevelParserYaml' === $className) {
+        /** @var \Nonogram\LevelParser\AbstractLevelParser $parser */
+        if(\Nonogram\LevelParser\LevelParserYaml::class === $className) {
             $parser = new $className($this->labelFactory, new \Symfony\Component\Yaml\Parser());
         }
         else {
@@ -130,7 +129,7 @@ EOD;
 
         if($parser instanceof \Nonogram\LevelParser\AbstractLevelParserGrid) {
             $actual = $parser->getGrid();
-            $expectedField = array();
+            $expectedField = [];
             foreach($expectedRaw as $expectedRowRaw) {
                 $expectedField[] = $this->convertRowRawToActual($expectedRowRaw);
             }

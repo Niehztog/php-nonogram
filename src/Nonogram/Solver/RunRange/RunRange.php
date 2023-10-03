@@ -8,24 +8,18 @@ namespace Nonogram\Solver\RunRange;
  */
 class RunRange
 {
-    /**
-     * @var \Nonogram\Label\Label
-     */
-    private $labels;
+
+    private \Nonogram\Label\Label $labels;
     
     /**
      * Numeric column labels = tuple of numbers
-     *
-     * @var array
      */
-    private $col = array();
+    private array $col = [];
 
     /**
      * Numeric row labels = tuple of numbers
-     *
-     * @var array
      */
-    private $row = array();
+    private array $row = [];
 
     /**
      * @param \Nonogram\Label\Label $labels
@@ -67,7 +61,7 @@ class RunRange
             throw new \RuntimeException('specify either row OR col number and not both');
         }
 
-        $r = array();
+        $r = [];
         $labels = $colNumber != null ? $this->labels->getLabelsForColumn($colNumber) : $this->labels->getLabelsForRow($rowNumber);
         if(empty($labels)) {
             return $r;
@@ -96,11 +90,7 @@ class RunRange
         return $r;
     }
 
-    /**
-     *
-     * @param $index
-     */
-    public function &getRangesForColumn($index)
+    public function &getRangesForColumn(int $index)
     {
         return $this->getRanges(false, $index);
     }
@@ -109,16 +99,12 @@ class RunRange
      *
      * @param int $index [1..n]
      */
-    public function &getRangesForRow($index)
+    public function &getRangesForRow(int $index)
     {
         return $this->getRanges(true, $index);
     }
 
-    /**
-     * @param $horizontal
-     * @param $index
-     */
-    private function &getRanges($horizontal, $index)
+    private function &getRanges(bool $horizontal, int $index)
     {
         if ($horizontal) {
             return $this->row[$index-1];

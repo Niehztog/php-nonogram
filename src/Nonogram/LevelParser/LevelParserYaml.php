@@ -4,10 +4,8 @@ namespace Nonogram\LevelParser;
 
 class LevelParserYaml extends AbstractLevelParser implements LevelParserInterface
 {
-    /**
-     * @var \Symfony\Component\Yaml\Parser
-     */
-    private $yamlParser;
+
+    private \Symfony\Component\Yaml\Parser $yamlParser;
 
     /**
      * LevelParserYaml constructor.
@@ -21,7 +19,7 @@ class LevelParserYaml extends AbstractLevelParser implements LevelParserInterfac
     }
 
     /**
-     * @return Label
+     * @return \Nonogram\Label\Label
      */
     public function getLabels()
     {

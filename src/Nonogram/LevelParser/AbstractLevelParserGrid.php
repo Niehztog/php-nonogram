@@ -38,7 +38,7 @@ abstract class AbstractLevelParserGrid extends AbstractLevelParser implements Le
      */
     public function getGrid()
     {
-        throw new Exception('Class ' . __CLASS__ . ' must implement method getGrid');
+        throw new \Exception('Class ' . __CLASS__ . ' must implement method getGrid');
     }
 
     /**

@@ -3,3 +3,5 @@
 /build/
 /.idea/
 /data/Levels/webpbn/
+/.phpunit.cache/
+.phpunit.result.cache

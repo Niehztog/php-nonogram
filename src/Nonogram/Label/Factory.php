@@ -40,6 +40,7 @@ class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareIn
             throw new \InvalidArgumentException('empty label array');
         }
 
+        /** @var \Nonogram\Label\Label $label */
         $label = $this->container->get('label');
 
         $label->setCol($labelsRaw['columns']);

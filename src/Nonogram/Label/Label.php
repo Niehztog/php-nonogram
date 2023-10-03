@@ -9,14 +9,14 @@ class Label
      *
      * @var array
      */
-    private $col = array();
+    private $col = [];
 
     /**
      * Numeric row labels = tuple of numbers
      *
      * @var array
      */
-    private $row = array();
+    private $row = [];
 
     /**
      * @var int

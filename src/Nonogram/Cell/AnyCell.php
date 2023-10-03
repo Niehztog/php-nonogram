@@ -2,6 +2,8 @@
 
 namespace Nonogram\Cell;
 
+use Nonogram\Exception\CellEmptyException;
+
 interface AnyCell
 {
 

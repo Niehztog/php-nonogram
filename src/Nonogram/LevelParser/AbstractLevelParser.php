@@ -56,7 +56,7 @@ abstract class AbstractLevelParser implements LevelParserInterface
      */
     public function getGrid()
     {
-        return array();
+        return [];
     }
 
     /**

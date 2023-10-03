@@ -1,15 +1,16 @@
 <?php
 
-class SolverTest extends AbstractTest
+namespace NonogramTests;
+
+class SolverTest extends AbstractTestCase
 {
     /**
      * Tests that the solver doesn't come to false conclusions
      *
      * Verifies only that all cells marked by the solver correspond to the actual solution
      * Does *not* check that the solver solved all cells (unknown cells are skipped)
-     * @test
      */
-    public function testSolverAllDataProvider()
+    public static function solverAllDataProvider()
     {
         $rootDir = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..') . DIRECTORY_SEPARATOR;
         $filePathFull = $rootDir . 'data' . DIRECTORY_SEPARATOR . 'Levels' . DIRECTORY_SEPARATOR;
@@ -17,7 +18,7 @@ class SolverTest extends AbstractTest
         $finder = new \Symfony\Component\Finder\Finder();
         $finder->files()->in($filePathFull)->name('*.dat')->notName('sunflower_25x25.dat');
 
-        $levelList = array();
+        $levelList = [];
         foreach ($finder as $file) {
             $levelFullPath = $file->getRealpath();
             $levelList[] = array(substr_replace($levelFullPath, '', strrpos($levelFullPath, '.')));
@@ -34,7 +35,7 @@ class SolverTest extends AbstractTest
      * @test
      * @param $filepath
      *
-     * @dataProvider testSolverAllDataProvider
+     * @dataProvider solverAllDataProvider
      */
     public function testSolverAll($filename)
     {

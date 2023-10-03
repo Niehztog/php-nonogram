@@ -41,7 +41,7 @@ services:
         class: Nonogram\Controller\ControllerMain
         arguments: ['@controller_display']
         calls:
-            - [setInputParameter, [{level_filename:%application.level_filename%}]]
+            - [setInputParameter, [{level_filename: '%application.level_filename%'}]]
 
 
     controller_game:
@@ -57,7 +57,7 @@ services:
         class: Nonogram\Controller\ControllerConvert
         arguments: ['@grid_factory', '@view_html', '@finder', '@grid_saver_file']
         calls:
-            - [setDefaultDirectory, [%application.level_directory%/webpbn]]
+            - [setDefaultDirectory, ['%application.level_directory%/webpbn']]
 
 
     view_text:

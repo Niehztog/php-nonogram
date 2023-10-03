@@ -31,7 +31,7 @@ class MyRule_6 extends AbstractRuleJ54
             return;
         }
 
-        $runLengths = array();
+        $runLengths = [];
         foreach($blackRuns as $run) {
             //count and group black run lengths
             if(!isset($runLengths[$run])) {
@@ -42,10 +42,10 @@ class MyRule_6 extends AbstractRuleJ54
         }
 
         //find delimited segments
-        $delimitedSegments = array();
+        $delimitedSegments = [];
         $newSegmentStart = null;
         $newSegmentEnd = null;
-        $segmentLengths = array();
+        $segmentLengths = [];
 
         for($i=0;$i<count($row);$i++) {
             if(AnyCell::TYPE_EMPTY === $row[$i]->getType()) {
@@ -80,7 +80,7 @@ class MyRule_6 extends AbstractRuleJ54
         //two cases:
         // 1) exactly one run range includes the segment --> update range to fit segment exactly
         // 2) the numbers of segments with same length equals the number of black runs with the corresponding length  --> update ranges to fit segments exactly
-        $alreadyProcessed = array();
+        $alreadyProcessed = [];
         foreach($delimitedSegments as $segment) {
             if(!isset($runLengths[$segment['length']])) {
                 throw new \RuntimeException('found a black segment which is not covered by a black run');

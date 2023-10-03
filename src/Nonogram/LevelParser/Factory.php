@@ -36,7 +36,7 @@ class Factory
      */
     public function getFileExtensions()
     {
-        $list = array();
+        $list = [];
         foreach ($this->parsers as $parser) {
             $list[] = $parser->getFileExtension();
         }

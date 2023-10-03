@@ -46,18 +46,18 @@ class LevelParserXml extends AbstractLevelParser implements LevelParserInterface
     }
 
     /**
-     * @return Label
+     * @return \Nonogram\Label\Label
      */
     public function getLabels()
     {
-        $labelsRaw = array();
+        $labelsRaw = [];
 
         foreach (array('columns', 'rows') as $direction) {
-            $labelsRaw[$direction] = array();
+            $labelsRaw[$direction] = [];
             $query = '//puzzleset/puzzle/clues[@type="'.$direction.'"]/line';
             $domNodeList = $this->domXPath->query($query);
             foreach ($domNodeList as $entry) {
-                $sequence = array();
+                $sequence = [];
                 $lines = $entry->getElementsByTagName('count');
                 foreach ($lines as $line) {
                     if ($line->hasAttribute('color')) {

@@ -20,7 +20,7 @@ class LabelProviderCells
     public function generateLabels(array $cells)
     {
         $this->cells = $cells;
-        $label = array();
+        $label = [];
         if(count($cells) > 1) {
             $label['columns'] = $this->getLabelsForColumn();
         }
@@ -52,7 +52,7 @@ class LabelProviderCells
     {
         $sizeX = count($this->cells[0]);
         $sizeY = count($this->cells);
-        $labelsAll = array();
+        $labelsAll = [];
         if ($horizontal) {
             $outerLimit = 'sizeY';
             $innerLimit = 'sizeX';

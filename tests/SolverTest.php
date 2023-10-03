@@ -50,11 +50,13 @@ class SolverTest extends AbstractTestCase
             $labelFactory,
             new \Symfony\Component\Yaml\Parser()
         );
-        $solver = $this->container->get('solver');
+        $solver = $this->container->get('solverJ54');
         $yamlDumper = new \Symfony\Component\Yaml\Dumper();
         $parserYaml->setRawData($yamlDumper->dump($labelsRaw));
         $labelsLoaded = $parserYaml->getLabels();
-        $cellsActual = $solver->solve($labelsLoaded);
+        $result = $solver->solve($grid);
+        $this->assertTrue($result);
+        $cellsActual = $grid->getCells();
 
         $this->assertGridsEqual($cellsExpected, $cellsActual, $filename);
     }

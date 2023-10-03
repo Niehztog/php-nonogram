@@ -2,6 +2,12 @@
 
 namespace Nonogram\LevelParser;
 
+/**
+ * Abstract Class for parsers which can interpret and provide grid layouts additional to
+ * label/clue information
+ *
+ * @package Nonogram\LevelParser
+ */
 abstract class AbstractLevelParserGrid extends AbstractLevelParser implements LevelParserInterface
 {
     /**
@@ -42,22 +48,33 @@ abstract class AbstractLevelParserGrid extends AbstractLevelParser implements Le
     }
 
     /**
-     * Returns the char representing a Box in the grid
+     * Some formats MAY provide grids, those can override this method to determine
+     * its ability to provide grids dynamically
+     * @return bool
+     */
+    public function hasGrid()
+    {
+        return true;
+    }
+
+    /**
+     * Returns the char representing an empty cell in the grid
      * @return string
      */
-    abstract protected function getBoxChar();
+    abstract protected function getCharEmpty();
 
     /**
      * @param $char
-     * @return \Nonogram\Cell\CellBox|\Nonogram\Cell\CellEmpty
+     * @param \Nonogram\Label\Color\Color|null $color
+     * @return \Nonogram\Cell\CellWrapper
      */
-    protected function convertRawToCell($char)
+    protected function convertRawToCell($char, \Nonogram\Label\Color\Color $color = null)
     {
         $this->cellFactory->setStatusHidden(false);
-        if ($this->getBoxChar() === $char) {
-            $cell = $this->cellFactory->getBox();
+        if ($this->getCharEmpty() === $char) {
+            $cell = $this->cellFactory->getEmpty($color);
         } else {
-            $cell = $this->cellFactory->getEmpty();
+            $cell = $this->cellFactory->getBox($color);
         }
         return $cell;
     }

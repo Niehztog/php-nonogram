@@ -35,11 +35,15 @@ class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareIn
     }
 
     /**
+     * @param \Nonogram\Label\Color\Color|null $color
      * @return CellWrapper
      */
-    public function getBox()
+    public function getBox(\Nonogram\Label\Color\Color $color = null)
     {
         $cell = $this->container->get('cell_box');
+        if(null !== $color) {
+            $cell->setColor($color);
+        }
         if(!$this->setStatusHidden) {
             $cell->fill();
         }
@@ -47,11 +51,15 @@ class Factory implements \Symfony\Component\DependencyInjection\ContainerAwareIn
     }
 
     /**
+     * @param \Nonogram\Label\Color\Color|null $color
      * @return CellWrapper
      */
-    public function getEmpty()
+    public function getEmpty(\Nonogram\Label\Color\Color $color = null)
     {
         $cell = $this->container->get('cell_empty');
+        if(null !== $color) {
+            $cell->setColor($color);
+        }
         if(!$this->setStatusHidden) {
             $cell->mark();
         }

@@ -4,7 +4,7 @@ namespace Nonogram\Cell;
 
 use Nonogram\Exception\CellEmptyException;
 
-class CellEmpty implements AnyCell
+class CellEmpty extends AbstractCell implements AnyCell
 {
 
     /**

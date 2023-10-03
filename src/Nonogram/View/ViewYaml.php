@@ -8,8 +8,15 @@ namespace Nonogram\View;
  */
 class ViewYaml extends AbstractView implements ViewInterface, ViewWritableInterface {
 
+    /**
+     * @var \Symfony\Component\Yaml\Dumper
+     */
     private $yamlDumper;
 
+    /**
+     * ViewYaml constructor.
+     * @param \Symfony\Component\Yaml\Dumper $yamlDumper
+     */
     public function __construct(\Symfony\Component\Yaml\Dumper $yamlDumper)
     {
         $this->yamlDumper = $yamlDumper;

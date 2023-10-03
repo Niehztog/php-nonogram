@@ -23,6 +23,7 @@
         "ext-dom": "*",
         "symfony/yaml": "^6.3",
         "symfony/dependency-injection": "^6.3",
+        "symfony/options-resolver": "^6.3",
         "symfony/config": "^6.3",
         "symfony/finder": "^6.3",
         "hoa/console": "^3.17",

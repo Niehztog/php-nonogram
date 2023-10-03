@@ -156,7 +156,7 @@ class Label
     }
 
     /**
-     * Tells whether any of the numbers in the labels equals to 0,
+     * Tells whether any of the numbers in the labels euqals to 0,
      * which means that the actual run-length is kept secret
      *
      * @return bool

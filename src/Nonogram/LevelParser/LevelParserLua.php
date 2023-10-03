@@ -8,7 +8,7 @@ class LevelParserLua extends AbstractLevelParserGrid implements LevelParserInter
     /**
      * @var string
      */
-    const BOX_CHAR = 'O';
+    const EMPTY_CHAR = '.';
 
     /**
      * @return \Nonogram\Cell\AnyCell[][]
@@ -39,12 +39,12 @@ class LevelParserLua extends AbstractLevelParserGrid implements LevelParserInter
     }
 
     /**
-     * Returns the char representing a Box in the grid
+     * Returns the char representing an empty cell in the grid
      * @return string
      */
-    protected function getBoxChar()
+    protected function getCharEmpty()
     {
-        return self::BOX_CHAR;
+        return self::EMPTY_CHAR;
     }
 
     /**

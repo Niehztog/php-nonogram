@@ -6,17 +6,22 @@ class Color
 {
 
     /**
-     * @var
+     * @var string
      */
     private $name;
 
     /**
-     * @var
+     * @var string
      */
     private $hex;
 
     /**
-     * @return mixed
+     * @var string
+     */
+    private $defaultChar;
+
+    /**
+     * @return string
      */
     public function getName()
     {
@@ -24,7 +29,7 @@ class Color
     }
 
     /**
-     * @param mixed $name
+     * @param string $name
      */
     public function setName($name)
     {
@@ -32,7 +37,7 @@ class Color
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getHex()
     {
@@ -40,11 +45,27 @@ class Color
     }
 
     /**
-     * @param mixed $hex
+     * @param string $hex
      */
     public function setHex($hex)
     {
         $this->hex = $hex;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultChar()
+    {
+        return $this->defaultChar;
+    }
+
+    /**
+     * @param string $defaultChar
+     */
+    public function setDefaultChar($defaultChar)
+    {
+        $this->defaultChar = $defaultChar;
     }
 
 }

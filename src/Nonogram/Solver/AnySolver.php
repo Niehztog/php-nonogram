@@ -5,8 +5,15 @@ namespace Nonogram\Solver;
 interface AnySolver
 {
     /**
-     * @param \Nonogram\Label\Label $labels
+     * @param \Nonogram\Grid\Grid $grid
+     */
+    public function solve(\Nonogram\Grid\Grid $grid);
+
+    /**
+     * Getter for property "ruleActionCounter"
+     *
      * @return array
      */
-    public function solve(\Nonogram\Label\Label $labels);
+    public function getSolvingStatistics();
+
 }

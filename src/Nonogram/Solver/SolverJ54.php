@@ -13,7 +13,7 @@ use Nonogram\Solver\RunRange\RunRange;
  *
  * @package Nonogram\Solver
  */
-class SolverJ54 implements AnySolver
+class SolverJ54 extends AbstractSolver implements AnySolver
 {
 
     private \Nonogram\Label\Label $labels;
@@ -130,18 +130,17 @@ class SolverJ54 implements AnySolver
      * @return array
      */
     public function solve(
-        \Nonogram\Label\Label $labels,
-        array $fieldOverride = [],
+        \Nonogram\Grid\Grid $grid,
+        array $fieldOverride = array(),
         RunRange $runRangeOverride = null
     )
     {
         $timeStart = microtime(true);
+        $labels = $grid->getLabels();
         $this->init($labels, $fieldOverride, $runRangeOverride);
-        if($labels instanceof \Nonogram\Label\LabelColored && $labels->getColorCount() > 1) {
-            return $this->field;
-        }
-        if($labels->hasHiddenCounts()) {
-            return $this->field;
+        if($labels->hasHiddenCounts() || ($labels instanceof \Nonogram\Label\LabelColored && $labels->getColorCount() > 1)) {
+            $grid->setCells($this->field);
+            return false;
         }
         $iterations = 0;
 
@@ -164,7 +163,8 @@ class SolverJ54 implements AnySolver
             }
 
             if (count($this->field) === 1) {
-                return $this->field;
+                $grid->setCells($this->field);
+                return true;
             }
 
             //iterate over all columns
@@ -192,7 +192,8 @@ class SolverJ54 implements AnySolver
         $this->lastSolvingTime = microtime(true) - $timeStart;
         $this->solvingStatistics['Iterations'] = $iterations;
         $this->solvingStatistics['Solving time'] = $this->lastSolvingTime;
-        return $this->field;
+        $grid->setCells($this->field);
+        return true;
     }
 
     private function processUpdateCounter(AbstractRuleJ54 $rule)

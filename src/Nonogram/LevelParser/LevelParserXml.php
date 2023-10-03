@@ -2,7 +2,7 @@
 
 namespace Nonogram\LevelParser;
 
-class LevelParserXml extends AbstractLevelParser implements LevelParserInterface, LevelParserMetaDataInterface
+class LevelParserXml extends AbstractLevelParserGrid implements LevelParserInterface, LevelParserMetaDataInterface
 {
 
     /**
@@ -16,13 +16,33 @@ class LevelParserXml extends AbstractLevelParser implements LevelParserInterface
     private $domXPath;
 
     /**
+     * @var \Nonogram\LevelParser\LevelParserDat
+     */
+    private $levelParserDat;
+
+    /**
+     * LevelParserXml constructor.
+     * @param \Nonogram\Label\Factory $labelFactory
+     * @param \Nonogram\Cell\Factory $cellFactory
+     * @param LevelParserDat $levelParserDat
+     */
+    public function __construct(
+        \Nonogram\Label\Factory $labelFactory,
+        \Nonogram\Cell\Factory $cellFactory,
+        \Nonogram\LevelParser\LevelParserDat $levelParserDat
+    ) {
+        $this->levelParserDat = $levelParserDat;
+        parent::__construct($labelFactory, $cellFactory);
+    }
+
+    /**
      * @param $rawData
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function setRawData($rawData)
     {
-        if (1 === preg_match('~Puzzle [0-9]+ does not exist~', $rawData)) {
+        if (1 === preg_match('~Puzzle [0-9]+ (?:does not exist|has not been published)~', $rawData)) {
             throw new \InvalidArgumentException(trim($rawData));
         }
 
@@ -42,7 +62,7 @@ class LevelParserXml extends AbstractLevelParser implements LevelParserInterface
      */
     public function canHandle($urn)
     {
-        return  parent::canHandle($urn) || 1 === preg_match('~http:\/\/webpbn\.com\/XMLpuz\.cgi\?id=[0-9]+~', $urn);
+        return  parent::canHandle($urn) || 1 === preg_match('~http:\/\/webpbn\.com\/(?:XMLpuz|export)\.cgi\?id=[0-9]+~', $urn);
     }
 
     /**
@@ -71,6 +91,53 @@ class LevelParserXml extends AbstractLevelParser implements LevelParserInterface
         
         return $this->labelFactory->getFromRaw($labelsRaw);
     }
+
+    /**
+     * Returns the grid information - if available
+     * must be overridden by child implementation
+     *
+     * @return \Nonogram\Cell\AnyCell[][]
+     */
+    public function getGrid()
+    {
+        $layout = $this->retrieveNodeValue('solution[@type="goal"]/image');
+        if(empty($layout)) {
+            return array();
+        }
+        $layout = str_replace('|','',trim($layout));
+
+        return $this->parseLayout($layout);
+    }
+
+    /**
+     * Some formats MAY provide grids, those can override this method to determine
+     * its ability to provide grids dynamically
+     * @return bool
+     */
+    public function hasGrid()
+    {
+        $layout = $this->retrieveNodeValue('solution[@type="goal"]/image');
+        return !empty($layout);
+    }
+
+    /**
+     * @param $output
+     * @return \Nonogram\Cell\AnyCell[][]
+     */
+    private function parseLayout($output)
+    {
+        $this->levelParserDat->setRawData($output);
+        $this->levelParserDat->useColors();
+        $cells = $this->levelParserDat->getGrid();
+
+        return $cells;
+    }
+
+    /**
+     * Returns the char representing an empty cell in the grid
+     * @return string
+     */
+    protected function getCharEmpty() {}
 
     /**
      * @return string

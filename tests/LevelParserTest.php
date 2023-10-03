@@ -117,20 +117,11 @@ EOD;
      */
     public function testParser($className, $rawData, $expectedRaw, $expectedMetaData = [])
     {
-        /** @var \Nonogram\LevelParser\AbstractLevelParser $parser */
-        if(\Nonogram\LevelParser\LevelParserYaml::class === $className) {
-            $parser = new $className($this->labelFactory, new \Symfony\Component\Yaml\Parser());
-        }
-        elseif('\Nonogram\LevelParser\LevelParserPdf' === $className) {
-            $parser = new $className($this->labelFactory, $this->container->get('color_factory'));
-        }
-        else {
-            $parser = new $className($this->labelFactory, $this->cellFactory);
-        }
+        $parser = $this->getParserInstance($className);
         $this->assertInstanceOf($className, $parser);
         $parser->setRawData($rawData);
 
-        if($parser instanceof \Nonogram\LevelParser\AbstractLevelParserGrid) {
+        if($parser instanceof \Nonogram\LevelParser\AbstractLevelParserGrid && $parser->hasGrid()) {
             $actual = $parser->getGrid();
             $expectedField = [];
             foreach($expectedRaw as $expectedRowRaw) {
@@ -151,6 +142,24 @@ EOD;
             }
         }
 
+    }
+
+    /**
+     * @param $className
+     * @return mixed
+     */
+    private function getParserInstance($className)
+    {
+        if (\Nonogram\LevelParser\LevelParserYaml::class === $className) {
+            $parser = new $className($this->labelFactory, new \Symfony\Component\Yaml\Parser());
+        } elseif (\Nonogram\LevelParser\LevelParserPdf::class === $className) {
+            $parser = new $className($this->labelFactory, $this->container->get('color_factory'));
+        } elseif (\Nonogram\LevelParser\LevelParserXml::class === $className) {
+            $parser = new $className($this->labelFactory, $this->cellFactory, $this->getParserInstance('\Nonogram\LevelParser\LevelParserDat'));
+        } else {
+            $parser = new $className($this->labelFactory, $this->cellFactory);
+        }
+        return $parser;
     }
 
 }

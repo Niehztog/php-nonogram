@@ -5,15 +5,9 @@ namespace Nonogram\LevelParser;
 class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface, LevelParserMetaDataInterface
 {
 
-    /**
-     * @var array
-     */
-    private $labelsRaw = array('columns' => array(), 'rows' => array());
+    private array $labelsRaw = ['columns' => [], 'rows' => []];
 
-    /**
-     * @var array
-     */
-    private $gridLines = array('columns' => array(), 'rows' => array());
+    private $gridLines = ['columns' => [], 'rows' => []];
 
     /**
      * left outer boundary x-coordinate
@@ -42,62 +36,40 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
      */
     private $outerBorderBottomY;
 
-    /**
-     * @var \Nonogram\Label\Label
-     */
-    private $labels;
+    private \Nonogram\Label\Label $labels;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private int $id;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private string $title;
 
-    /**
-     * @var string
-     */
-    private $author;
+    private string $author;
 
-    /**
-     * @var string
-     */
-    private $copyright;
+    private string $copyright;
 
-    /**
-     * @var string
-     */
-    private $created;
+    private string $created;
 
-    /**
-     * @var \Nonogram\Label\Color\Factory
-     */
-    private $colorFactory;
+    private \Nonogram\Label\Color\Factory $colorFactory;
 
-    const REGEX_SNIPPET_FLOAT_NUMBER = '([0-9]+\.?[0-9]*)';
+    private const REGEX_SNIPPET_FLOAT_NUMBER = '([0-9]+\.?[0-9]*)';
 
-    const REGEX_OUTER_BORDERS = '~1\.5 w 0 0 0 RG ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' m ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l S~';
+    private const REGEX_OUTER_BORDERS = '~1\.5 w 0 0 0 RG ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' m ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l S~';
 
-    const REGEX_GRID_LINES = '~(?:1|0)\.5 w 0 0 0 RG ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' m ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l S~';
+    private const REGEX_GRID_LINES = '~(?:1|0)\.5 w 0 0 0 RG ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' m ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' l S~';
 
-    const REGEX_TEXT = '~Tf (?:' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' rg )?[0-9]+ [0-9]+ [0-9]+ [0-9]+ ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' Tm.+\((.+)\)~';
+    private const REGEX_TEXT = '~Tf (?:' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' rg )?[0-9]+ [0-9]+ [0-9]+ [0-9]+ ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' Tm.+\((.+)\)~';
 
     //lower-left  corner  (x,y)  and  dimensions width and height in user space. The operation x y width height re
-    const REGEX_HIDDEN_CLUES = '~' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' rg ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' (\-?[0-9]+\.?[0-9]*) (\-?[0-9]+\.?[0-9]*) re f~';
+    private const REGEX_HIDDEN_CLUES = '~' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' rg ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' ' . self::REGEX_SNIPPET_FLOAT_NUMBER . ' (\-?[0-9]+\.?[0-9]*) (\-?[0-9]+\.?[0-9]*) re f~';
 
     /**
      * List of all regex and the proper processing method for ther results
-     * @var array
      */
-    private static $knownContentTypes = array(
+    private const KNOWN_CONTENT_TYPES = [
         'processOuterBorders' => self::REGEX_OUTER_BORDERS,
         'processGridLine' => self::REGEX_GRID_LINES,
         'processText' => self::REGEX_TEXT,
         'processHiddenClue' => self::REGEX_HIDDEN_CLUES,
-    );
+    ];
 
     /**
      * LevelParserPdf constructor.
@@ -131,7 +103,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
     }
 
     /**
-     * @return Label
+     * @return \Nonogram\Label\Label
      */
     public function getLabels()
     {
@@ -205,7 +177,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
                 continue;
             }
 
-            foreach(self::$knownContentTypes as $method => $regex) {
+            foreach(self::KNOWN_CONTENT_TYPES as $method => $regex) {
                 if (1 === preg_match($regex, $content, $matches)) {
                     $this->$method($matches);
                     break;
@@ -290,7 +262,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
      */
     private function processText(array $matches)
     {
-        $colorHex = $this->rgb2hex($matches[1] * 255, $matches[2] * 255, $matches[3] * 255);
+        $colorHex = $this->rgb2hex((float)$matches[1] * 255, (float)$matches[2] * 255, (float)$matches[3] * 255);
         $coordsX = $matches[4];
         $coordsY = $matches[5];
         $text = $matches[6];
@@ -327,7 +299,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
      */
     private function processHiddenClue(array $matches)
     {
-        $colorHex = $this->rgb2hex($matches[1] * 255, $matches[2] * 255, $matches[3] * 255);
+        $colorHex = $this->rgb2hex((float)$matches[1] * 255, (float)$matches[2] * 255, (float)$matches[3] * 255);
         $hiddenClueWidth = $matches[6];
         $hiddenClueHeight = $matches[7];
         $coordsX = sprintf("%01.2f", $matches[4] + $hiddenClueWidth / 2);
@@ -393,7 +365,7 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
         foreach(array('columns', 'rows') as $direction) {
             for ($i = 0; $i < count($this->labelsRaw[$direction]); $i++) {
                 if (!isset($this->labelsRaw[$direction][$i])) {
-                    $this->labelsRaw[$direction][$i] = array();
+                    $this->labelsRaw[$direction][$i] = [];
                 }
             }
             ksort($this->labelsRaw[$direction]);
@@ -405,8 +377,8 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
      */
     private function resetTempProperties()
     {
-        $this->labelsRaw = array('columns' => array(), 'rows' => array());
-        $this->gridLines = array('columns' => array(), 'rows' => array());
+        $this->labelsRaw = ['columns' => [], 'rows' => []];
+        $this->gridLines = ['columns' => [], 'rows' => []];
         $this->outerBorderLeftX = null;
         $this->outerBorderRightX = null;
         $this->outerBorderTopY = null;
@@ -415,13 +387,8 @@ class LevelParserPdf extends AbstractLevelParser implements LevelParserInterface
 
     /**
      * Convert RGB to hex color
-     *
-     * @param $r
-     * @param $g
-     * @param $b
-     * @return string
      */
-    private function rgb2hex($r, $g, $b)
+    private function rgb2hex(int $r, int $g, int $b): string
     {
         return sprintf('%02x%02x%02x', $r, $g, $b);
     }

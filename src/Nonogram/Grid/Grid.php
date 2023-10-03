@@ -63,7 +63,7 @@ class Grid
     private $created = '';
         
     /**
-     * @var \Nonogram\Solver\SolverJ54
+     * @var \Nonogram\Solver\AnySolver
      */
     private $solver;
 
@@ -74,9 +74,9 @@ class Grid
 
 
     /**
-     * @param \Nonogram\Solver\SolverJ54 $solver
+     * @param \Nonogram\Solver\AnySolver $solver
      */
-    public function setSolver(\Nonogram\Solver\SolverJ54 $solver)
+    public function setSolver(\Nonogram\Solver\AnySolver $solver)
     {
         $this->solver = $solver;
     }
@@ -96,7 +96,7 @@ class Grid
     public function getCells()
     {
         if(empty($this->cells) && !empty($this->labels)) {
-            $this->cells = $this->solver->solve($this->labels);
+            $this->solver->solve($this);
             $this->solvingStatistics = $this->solver->getSolvingStatistics();
         }
 
@@ -269,6 +269,9 @@ class Grid
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function getSolvingStatistics()
     {
         return $this->solvingStatistics;

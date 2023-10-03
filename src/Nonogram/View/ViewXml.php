@@ -15,7 +15,10 @@ use Nonogram\Cell\AnyCell;
  */
 class ViewXml extends AbstractView implements ViewInterface, ViewWritableInterface {
 
-    private static $chars = array('X','.','*','%','@');
+    /**
+     * @var bool
+     */
+    private $settingIncludeSolution = true;
 
     /**
      * @return string
@@ -31,13 +34,13 @@ class ViewXml extends AbstractView implements ViewInterface, ViewWritableInterfa
             PHP_EOL .
             '<source>webpbn.com</source>' . PHP_EOL .
             '<id>'.($this->grid->getId() > 0 ? '#'.$this->grid->getId():'').'</id>' . PHP_EOL .
-            '<title>'.$this->grid->getTitle().'</title>' . PHP_EOL .
-            '<author>'.$this->grid->getAuthor().'</author>' . PHP_EOL .
+            '<title>'.$this->xmlEscape($this->grid->getTitle()).'</title>' . PHP_EOL .
+            '<author>'.$this->xmlEscape($this->grid->getAuthor()).'</author>' . PHP_EOL .
             '<authorid></authorid>' . PHP_EOL .
-            '<copyright>'.str_replace('(c) ', '&copy; ', $this->grid->getCopyright()).'</copyright>' . PHP_EOL;
+            '<copyright>'.str_replace('(c) ', '&copy; ', $this->xmlEscape($this->grid->getCopyright())).'</copyright>' . PHP_EOL;
         if($this->grid->getDescription()) {
             $outStr .= '<description>' . PHP_EOL .
-            $this->grid->getDescription() . PHP_EOL .
+                $this->xmlEscape($this->grid->getDescription()) . PHP_EOL .
             '</description>' . PHP_EOL;
         }
         $outStr .= PHP_EOL .
@@ -46,7 +49,7 @@ class ViewXml extends AbstractView implements ViewInterface, ViewWritableInterfa
             $colorList = $labels->getColorList();
             foreach($colorList as $colorKey => $color) {
                 $outStr .=
-                    '<color name="'.$color->getName().'" char="'.self::$chars[$colorKey].'">'.$color->getHex().'</color>' . PHP_EOL;
+                    '<color name="'.$color->getName().'" char="'.$color->getDefaultChar().'">'.$color->getHex().'</color>' . PHP_EOL;
             }
         }
         $outStr .=
@@ -85,7 +88,7 @@ class ViewXml extends AbstractView implements ViewInterface, ViewWritableInterfa
         }
 
         $outStr .= '</clues>' . PHP_EOL;
-        if($this->grid->isSolved()) {
+        if($this->settingIncludeSolution && $this->grid->isSolved()) {
             $outStr .= PHP_EOL .
             '<solution type="goal">' . PHP_EOL .
             '<image>' . PHP_EOL;
@@ -94,7 +97,8 @@ class ViewXml extends AbstractView implements ViewInterface, ViewWritableInterfa
             foreach ($field as $row) {
                 $outStr .= '|';
                 foreach ($row as $cell) {
-                    $outStr .= $cell->getType() === AnyCell::TYPE_BOX ? 'X' : '.';
+                    $color = $cell->getColor();
+                    $outStr .= $color instanceof \Nonogram\Label\Color\Color ? $color->getDefaultChar() : ($cell->getType() === AnyCell::TYPE_BOX ? 'X' : '.');
                 }
                 $outStr .= '|' . PHP_EOL;
             }
@@ -113,12 +117,35 @@ class ViewXml extends AbstractView implements ViewInterface, ViewWritableInterfa
     }
 
     /**
+     * @param null $newVal
+     * @return bool
+     */
+    public function settingIncludeSolution($newVal = null)
+    {
+        if(is_bool($newVal)) {
+            $this->settingIncludeSolution = $newVal;
+        }
+        else {
+            return $this->settingIncludeSolution;
+        }
+    }
+
+    /**
      * In case output format supports being written to a file, this method returns the suitable file extension
      * @return string
      */
     public function getFileExtension()
     {
         return 'xml';
+    }
+
+    /**
+     * @param $string
+     * @return string
+     */
+    private function xmlEscape($string)
+    {
+        return htmlspecialchars($string, ENT_XML1);
     }
 
 }

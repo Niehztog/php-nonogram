@@ -2,6 +2,11 @@
 
 namespace Nonogram\LevelParser;
 
+/**
+ * Abstract Class for parsers which can interpret and provide at least label/clue information
+ * 
+ * @package Nonogram\LevelParser
+ */
 abstract class AbstractLevelParser implements LevelParserInterface
 {
     /**

@@ -16,26 +16,30 @@ parameters:
     #application.level_filename: 'https://raw.githubusercontent.com/Substance12/Picroxx/master/game/courses/mariopicross/easy/level1/a.lua'
     #application.level_filename: 'http://webpbn.com/XMLpuz.cgi?id=1'
     #application.level_filename: 'http://webpbn.com/XMLpuz.cgi?id=[1-20]'
-    #application.level_filename: 'http://webpbn.com/XMLpuz.cgi?id=3875'
+    #application.level_filename: 'http://webpbn.com/export.cgi?id=[1-28017]&fmt=xml&xml_clue=on&xml_soln=on&go=1'
     #application.level_filename: 'http://webpbn.com/t/webpbn-[1-20]-1.pdf'
-    #application.level_filename: 'http://webpbn.com/t/webpbn-3875-1.pdf'
-    #application.level_filename: 'http://webpbn.com/t/webpbn-27961-1.pdf'
-    #application.level_filename: 'http://webpbn.com/t/webpbn-27944-1.pdf'
+    #application.level_filename: 'http://webpbn.com/t/webpbn-3152-1.pdf'
     #application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-10269-1.pdf'
-    #application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-19418-1.pdf'
-    application.level_filename: 'C:\Users\Nils\Downloads\webpbn\webpbn-26255-1.pdf'
-    #application.level_filename: 'C:\Users\Nils\Downloads\webpbn'
-    application.level_filename:
-        - '%application.level_directory%/mariopicross/easy-level2-a.yml'
-        - '%application.level_directory%/mariopicross/easy-level2-b.yml'
-        - '%application.level_directory%/mariopicross/easy-level2-c.yml'
-        - '%application.level_directory%/mariopicross/easy-level2-d.yml'
-        - '%application.level_directory%/mariopicross/easy-level2-e.yml'
-        - '%application.level_directory%/mariopicross/easy-level2-f.yml'
+    application.level_filename: 'C:\Users\Nils\Downloads\webpbn\lost\webpbn-25385-1.pdf'
+    #application.level_filename: 'C:\Users\Nils\Downloads\webpbn\lost'
+    #application.level_filename: '/media/nilgot/26C08F72C08F46D1/webpbn/webpbn-10088-1.pdf'
+    #application.level_filename: '/media/nilgot/26C08F72C08F46D1/webpbn'
+    #application.level_filename:
+    #    - '%application.level_directory%/mariopicross/easy-level2-a.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-b.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-c.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-d.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-e.yml'
+    #    - '%application.level_directory%/mariopicross/easy-level2-f.yml'
 
-    application.html_export.solved: true
-    application.html_export.cellsize: 20
-    application.html_export.multiple: true
+    application.export.solved: true
+    application.html_export:
+        solved: '%application.export.solved%'
+        cellSizePx: 20
+        exportMultiple: true
+    #application.solver.pbn.cmd: '/home/nilgot/projects/pbnsolve-1.10/pbnsolve'
+    application.solver.pbn.cmd: 'plink nils@192.168.0.26 /home/nils/pbnsolve-1.10/pbnsolve'
+    application.solver.bgu.cmd: 'c:\Users\Nils\Downloads\bgusolver_cmd_102.jar'
 
 services:
     application:
@@ -69,19 +73,22 @@ services:
         public: false
         class: Nonogram\View\ViewYaml
         arguments: ['@yaml_dumper']
+    view_nin:
+        public: false
+        class: Nonogram\View\ViewNin
     view_textmin:
         public: false
         class: Nonogram\View\ViewTextMinimal
     view_xml:
+        shared: true
         public: false
         class: Nonogram\View\ViewXml
+        calls:
+            - [settingIncludeSolution, ['%application.export.solved%']]
     view_html:
         public: false
         class: Nonogram\View\ViewHtml
-        calls:
-            - [setSolved, ['%application.html_export.solved%']]
-            - [setCellSizePx, ['%application.html_export.cellsize%']]
-            - [setExportMultiple, ['%application.html_export.multiple%']]
+        arguments: ['@options_resolver', '%application.html_export%']
 
 
     grid_factory:
@@ -96,7 +103,7 @@ services:
         public: true
         class: Nonogram\Grid\Grid
         calls:
-            - [setSolver, ['@solver']]
+            - [setSolver, ['@solverBgu']]
 
 
     data_source_factory:
@@ -133,7 +140,7 @@ services:
     level_parser_dat:
         public: false
         class: Nonogram\LevelParser\LevelParserDat
-        arguments: ['@label_factory', '@cell_factory']
+        arguments: ['@label_factory', '@cell_factory', '@color_factory']
 
     level_parser_lua:
         public: false
@@ -143,7 +150,7 @@ services:
     level_parser_xml:
         public: false
         class: Nonogram\LevelParser\LevelParserXml
-        arguments: ['@label_factory']
+        arguments: ['@label_factory', '@cell_factory', '@level_parser_dat']
 
     level_parser_pdf:
         public: false
@@ -203,6 +210,8 @@ services:
         shared: false
         public: true
         class: Nonogram\Label\LabelColored
+        calls:
+            - [addStandardColor, ['@color_white']]
 
     label_generator:
         public: false
@@ -214,7 +223,23 @@ services:
         class: Nonogram\Grid\Saver\GridSaverFile
 
 
-    solver:
+    solverPbn:
+        shared: true
+        public: false
+        class: Nonogram\Solver\SolverPbnSolve
+        arguments: ['@view_xml', '@level_parser_dat']
+        calls:
+            - [settingExecutablePath, ['%application.solver.pbn.cmd%']]
+
+    solverBgu:
+        shared: true
+        public: false
+        class: Nonogram\Solver\SolverBgu
+        arguments: ['@view_nin', '@level_parser_dat']
+        calls:
+            - [settingExecutablePath, ['%application.solver.bgu.cmd%']]
+
+    solverJ54:
         public: true
         class: Nonogram\Solver\SolverJ54
         arguments: ['@cell_factory', '@run_range_factory']
@@ -332,10 +357,19 @@ services:
         public: true
         class: Nonogram\Label\Color\Factory
         calls:
+            - [addColor, ['@color_white']]
             - [addColor, ['@color_black']]
             - [addColor, ['@color_red']]
             - [addColor, ['@color_green']]
             - [addColor, ['@color_blue']]
+
+    color_white:
+        public: false
+        class: Nonogram\Label\Color\Color
+        calls:
+            - [setName, ['white']]
+            - [setHex, ['ffffff']]
+            - [setDefaultChar, ['.']]
 
     color_black:
         public: false
@@ -343,6 +377,7 @@ services:
         calls:
             - [setName, ['black']]
             - [setHex, ['000000']]
+            - [setDefaultChar, ['X']]
 
     color_red:
         public: false
@@ -350,6 +385,7 @@ services:
         calls:
             - [setName, ['red']]
             - [setHex, ['ff0000']]
+            - [setDefaultChar, ['*']]
 
     color_green:
         public: false
@@ -357,6 +393,7 @@ services:
         calls:
             - [setName, ['green']]
             - [setHex, ['00aa00']]
+            - [setDefaultChar, ['%']]
 
     color_blue:
         public: false
@@ -364,6 +401,7 @@ services:
         calls:
             - [setName, ['blue']]
             - [setHex, ['0000ff']]
+            - [setDefaultChar, ['@@']]
 
     yaml_dumper:
         public: false
@@ -376,3 +414,7 @@ services:
     finder:
         public: false
         class: \Symfony\Component\Finder\Finder
+
+    options_resolver:
+        public: false
+        class: \Symfony\Component\OptionsResolver\OptionsResolver

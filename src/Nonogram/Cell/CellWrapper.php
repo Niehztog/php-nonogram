@@ -81,4 +81,21 @@ class CellWrapper implements AnyCell
     {
         return null !== $this->cellInstance && $this->cellInstance->isSolved();
     }
+
+    /**
+     * @return \Nonogram\Label\Color\Color
+     */
+    public function getColor()
+    {
+        return $this->cellInstance->getColor();
+    }
+
+    /**
+     * @param \Nonogram\Label\Color\Color $color
+     */
+    public function setColor(\Nonogram\Label\Color\Color $color)
+    {
+        $this->cellInstance->setColor($color);
+    }
+
 }

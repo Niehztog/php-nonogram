@@ -33,7 +33,7 @@ class ControllerDisplay extends AbstractSubController implements AnyController
 
         $grid = $this->view->getGrid();
         $solvingStatistics = $grid instanceof \Nonogram\Grid\Grid ? $grid->getSolvingStatistics() : null;
-        if (null !== $solvingStatistics) {
+        if(null !== $solvingStatistics) {
             $this->addSolvingStatistics($solvingStatistics);
         }
 
